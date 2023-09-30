@@ -1,23 +1,24 @@
 package main
 
 import (
-	"fmt"
-	"github.com/gin-gonic/gin"
+	"log"
+	"net/http"
 
-	"github.com/nerd500/axios-cp-wing/handlers" 
+	"github.com/nerd500/axios-cp-wing/routes"
 )
 
 func main() {
-	router := gin.Default()
 
-	
-	router.GET("/", handlers.Ping)
+	router := routes.SetupRoutes()
 
-	port := 8080
-	err := router.Run(fmt.Sprintf(":%d", port))
-	if err != nil {
-		fmt.Printf("Error starting server: %v\n", err)
+	server := &http.Server{
+		Addr:    ":8080",
+		Handler: router,
 	}
 
-	
+	err := server.ListenAndServe()
+	if err != nil {
+		log.Fatalf("Server failed to start: %v", err)
+	}
+
 }
