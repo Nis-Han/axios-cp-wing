@@ -5,7 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 
-	"github.com/nerd500/axios-cp-wing/models"
+	"github.com/nerd500/axios-cp-wing/internal/database"
 )
 
 func GenerateSalt() string {
@@ -23,8 +23,8 @@ func HashPassword(password, salt string) string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-func CheckPassword(user models.User, password string) bool {
-	return user.Password == HashPassword(password, user.Salt)
+func CheckPassword(user database.User, password string) bool {
+	return user.HashedPassword == HashPassword(password, user.Salt)
 }
 
 func GenerateAuthToken(length int) string {

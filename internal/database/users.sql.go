@@ -7,7 +7,67 @@ package database
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
+
+const createUser = `-- name: CreateUser :one
+INSERT INTO users (
+    id,
+    email,
+    hashed_password,
+    salt,
+    first_name,
+    last_name,
+    auth_token,
+    is_admin_user
+) VALUES (
+    $1,
+    $2,
+    $3,
+    $4,
+    $5,
+    $6,
+    $7,
+    $8
+) RETURNING id, email, hashed_password, salt, first_name, last_name, auth_token, is_admin_user
+`
+
+type CreateUserParams struct {
+	ID             uuid.UUID
+	Email          string
+	HashedPassword string
+	Salt           string
+	FirstName      string
+	LastName       string
+	AuthToken      string
+	IsAdminUser    bool
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, createUser,
+		arg.ID,
+		arg.Email,
+		arg.HashedPassword,
+		arg.Salt,
+		arg.FirstName,
+		arg.LastName,
+		arg.AuthToken,
+		arg.IsAdminUser,
+	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.HashedPassword,
+		&i.Salt,
+		&i.FirstName,
+		&i.LastName,
+		&i.AuthToken,
+		&i.IsAdminUser,
+	)
+	return i, err
+}
 
 const getUser = `-- name: GetUser :one
 SELECT id, email, hashed_password, salt, first_name, last_name, auth_token, is_admin_user FROM users
