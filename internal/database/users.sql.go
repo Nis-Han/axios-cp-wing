@@ -89,3 +89,26 @@ func (q *Queries) GetUser(ctx context.Context, email string) (User, error) {
 	)
 	return i, err
 }
+
+const getUserAuthTokenwithEmail = `-- name: GetUserAuthTokenwithEmail :one
+SELECT email, is_admin_user FROM users
+WHERE users.auth_token = $1
+AND users.email = $2
+`
+
+type GetUserAuthTokenwithEmailParams struct {
+	AuthToken string
+	Email     string
+}
+
+type GetUserAuthTokenwithEmailRow struct {
+	Email       string
+	IsAdminUser bool
+}
+
+func (q *Queries) GetUserAuthTokenwithEmail(ctx context.Context, arg GetUserAuthTokenwithEmailParams) (GetUserAuthTokenwithEmailRow, error) {
+	row := q.db.QueryRowContext(ctx, getUserAuthTokenwithEmail, arg.AuthToken, arg.Email)
+	var i GetUserAuthTokenwithEmailRow
+	err := row.Scan(&i.Email, &i.IsAdminUser)
+	return i, err
+}

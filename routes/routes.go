@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nerd500/axios-cp-wing/handlers"
 	"github.com/nerd500/axios-cp-wing/internal/database"
+	"github.com/nerd500/axios-cp-wing/middleware"
 )
 
 func SetupRoutes(db *database.Queries) *gin.Engine {
@@ -20,6 +21,9 @@ func SetupRoutes(db *database.Queries) *gin.Engine {
 		userRoutes.POST("/login", handlers.Login)
 		userRoutes.POST("/signup", handlers.CreateUser)
 	}
+
+	authedRoutes := router.Group("/authed")
+	authedRoutes.Use(middleware.AuthMiddleware)
 
 	return router
 }

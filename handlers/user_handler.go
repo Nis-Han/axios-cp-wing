@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -15,7 +14,6 @@ func Login(c *gin.Context) {
 	var loginData models.LoginData
 	err := c.ShouldBindJSON(&loginData)
 
-	fmt.Println(loginData)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, "Ill-formatted request body")
 		return

@@ -22,3 +22,8 @@ INSERT INTO users (
     $7,
     $8
 ) RETURNING *;
+
+-- name: GetUserAuthTokenwithEmail :one
+SELECT email, is_admin_user FROM users
+WHERE users.auth_token = $1
+AND users.email = $2;

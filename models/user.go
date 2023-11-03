@@ -19,6 +19,11 @@ type LoginData struct {
 	Password string `json:"password" binding:"required"`
 }
 
+type AuthData struct {
+	Email     string `json:"email" binding:"required"`
+	AuthToken string `json:"auth"`
+}
+
 func DbUserToUser(dbUser database.User) User {
 	return User{
 		ID:        dbUser.ID,
