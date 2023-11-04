@@ -24,6 +24,6 @@ INSERT INTO users (
 ) RETURNING *;
 
 -- name: GetUserAuthTokenwithEmail :one
-SELECT email, is_admin_user FROM users
+SELECT * FROM users
 WHERE users.auth_token = $1
 AND users.email = $2;

@@ -31,15 +31,14 @@ func AuthMiddleware(c *gin.Context) {
 	}
 
 	var userAuthTokenwithEmailParams = database.GetUserAuthTokenwithEmailParams{AuthToken: authData.AuthToken, Email: authData.Email}
-	dbData, err := databaseInstance.GetUserAuthTokenwithEmail(c.Request.Context(), userAuthTokenwithEmailParams)
+	userData, err := databaseInstance.GetUserAuthTokenwithEmail(c.Request.Context(), userAuthTokenwithEmailParams)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": fmt.Sprintf("Invalid AuthToken for user Email: %v", authData.Email)})
 		return
 	}
 
-	c.Set("authedUserEmail", dbData.Email)
-	c.Set("isAdminUser", dbData.IsAdminUser)
+	c.Set("userData", userData)
 
 	c.Next()
 }
