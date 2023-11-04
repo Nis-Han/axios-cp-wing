@@ -28,15 +28,20 @@ func main() {
 	dbConnectionString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbHost, dbPort, dbUser, dbPassword, dbName)
 
 	conn, err := sql.Open("postgres", dbConnectionString)
+
 	if err != nil {
 		log.Fatalf("Error connecting to the database: %v", err)
 	}
+
+	if err = conn.Ping(); err != nil {
+		log.Fatalf("Failed to ping the database: %v", err)
+	}
+	
+	fmt.Printf("connected to database \n")
 	defer conn.Close()
 
 	db := database.New(conn)
 	router := routes.SetupRoutes(db)
-
-	fmt.Printf("connected to database \n")
 
 	server := &http.Server{
 		Addr:    ":8080",
