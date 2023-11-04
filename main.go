@@ -31,12 +31,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error connecting to the database: %v", err)
 	}
-
-	fmt.Printf("connected to database \n")
 	defer conn.Close()
 
 	db := database.New(conn)
 	router := routes.SetupRoutes(db)
+
+	fmt.Printf("connected to database \n")
 
 	server := &http.Server{
 		Addr:    ":8080",
