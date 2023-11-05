@@ -7,7 +7,6 @@ import (
 	"github.com/nerd500/axios-cp-wing/handlers"
 	"github.com/nerd500/axios-cp-wing/internal/database"
 	"github.com/nerd500/axios-cp-wing/middleware"
-	"github.com/nerd500/axios-cp-wing/models"
 )
 
 func SetupRoutes(db *database.Queries) *gin.Engine {
@@ -36,5 +35,8 @@ func SetupRoutes(db *database.Queries) *gin.Engine {
 		}
 		c.Next()
 	})
+	{
+		adminRoutes.POST("/createTask", handlers.CreateTask)
+	}
 	return router
 }
