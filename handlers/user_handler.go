@@ -19,18 +19,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	db, dbExists := c.Get("db")
-	if !dbExists {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Problem connecting with db"})
-		return
-	}
-
-	databaseInstance, ok := db.(*database.Queries)
-	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Problem connecting with db"})
-		return
-	}
-	dbUser, err := databaseInstance.GetUser(c.Request.Context(), loginData.Email)
+	dbUser, err := database.DBInstance.GetUser(c.Request.Context(), loginData.Email)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "User not found"})
@@ -73,30 +62,17 @@ func CreateUser(c *gin.Context) {
 	createUserParams.AuthToken = utils.GenerateAuthToken(100)
 	createUserParams.IsAdminUser = false
 
-	db, dbExists := c.Get("db")
-	if !dbExists {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Problem connecting with db"})
-		return
-	}
-
-	databaseInstance, ok := db.(*database.Queries)
-
-	_, err := databaseInstance.GetUser(c.Request.Context(), createUserParams.Email)
+	_, err := database.DBInstance.GetUser(c.Request.Context(), createUserParams.Email)
 	if err == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "User already exists"})
 		return
 	}
 
-	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Problem connecting with db"})
-		return
-	}
-
 	var dbUser database.User
-	dbUser, err = databaseInstance.CreateUser(c.Request.Context(), createUserParams)
+	dbUser, err = database.DBInstance.CreateUser(c.Request.Context(), createUserParams)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Couldnt create user"})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Couldnt create user", "err": err.Error()})
 		return
 	}
 

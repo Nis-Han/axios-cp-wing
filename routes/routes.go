@@ -9,13 +9,8 @@ import (
 	"github.com/nerd500/axios-cp-wing/middleware"
 )
 
-func SetupRoutes(db *database.Queries) *gin.Engine {
+func SetupRoutes() *gin.Engine {
 	router := gin.Default()
-
-	router.Use(func(c *gin.Context) {
-		c.Set("db", db)
-		c.Next()
-	})
 
 	router.GET("/ping", handlers.Ping)
 	userRoutes := router.Group("/user")

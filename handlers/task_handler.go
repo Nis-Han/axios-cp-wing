@@ -31,19 +31,7 @@ func CreateTask(c *gin.Context) {
 	newTaskData.Tags = taskCreationRequestData.Tags
 	newTaskData.Platform = taskCreationRequestData.Platform
 
-	db, dbExists := c.Get("db")
-	if !dbExists {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Problem connecting with db"})
-		return
-	}
-
-	databaseInstance, ok := db.(*database.Queries)
-	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Problem connecting with db"})
-		return
-	}
-
-	dbTask, err := databaseInstance.CreateTask(c.Request.Context(), newTaskData)
+	dbTask, err := database.DBInstance.CreateTask(c.Request.Context(), newTaskData)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Couldnt create task"})
