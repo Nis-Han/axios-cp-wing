@@ -1,8 +1,11 @@
 package handlers
 
 import (
+	"bytes"
+	"encoding/json"
 	"log"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 
@@ -10,6 +13,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/nerd500/axios-cp-wing/internal/database"
 	"github.com/nerd500/axios-cp-wing/middleware"
+	"github.com/nerd500/axios-cp-wing/models"
 )
 
 func router() *gin.Engine {
@@ -76,4 +80,27 @@ func setupServer() {
 
 	initialiseTestDB()
 
+}
+
+func makeRequest(method, url string, body interface{}) *httptest.ResponseRecorder {
+	requestBody, _ := json.Marshal(body)
+	log.Print(bytes.NewBuffer(requestBody))
+	request, _ := http.NewRequest(method, url, bytes.NewBuffer(requestBody))
+	writer := httptest.NewRecorder()
+	router().ServeHTTP(writer, request)
+	return writer
+}
+
+func GetSampleAuthData() models.AuthData {
+	if len(authDataList) == 0 {
+		TestSignUp(&testing.T{})
+	}
+	return authDataList[0]
+}
+
+func GetSampleLoginCredentials() models.LoginData {
+	if len(loginCredentialsList) == 0 {
+		TestSignUp(&testing.T{})
+	}
+	return loginCredentialsList[0]
 }
