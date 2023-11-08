@@ -13,6 +13,19 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: mydbuser
+          POSTGRES_PASSWORD: secretpassword
+          POSTGRES_DB: axios_cp_wing_test
+        options: >-
+          --health-cmd "pg_isready"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          -p 5432:5432
     steps:
     - uses: actions/checkout@v3
 
@@ -21,6 +34,12 @@ jobs:
       with:
         go-version: '1.21.2'
 
+    - name: Install Goose
+      run: go install github.com/pressly/goose/v3/cmd/goose@latest
+
+    - name: Run DB Migrations
+      run:
+        cd ./sql/schemas && goose postgres "host=localhost user=mydbuser password=secretpassword dbname=axios_cp_wing_test sslmode=disable" up && cd ../..
     - name: Build
       run: go build -v ./...
 
