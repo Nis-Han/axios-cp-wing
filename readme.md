@@ -14,9 +14,12 @@ Platform for listing and tracking solved CP problems for students and the Compet
 - [ ] Deployment using proper CI/CD  
 
 
+## Databse Schema (To Be Implemented)
+![DB Schema](./resources/images/DB%20Schema.jpg)
 
 
-# API Documentation
+
+# API Documentation (To Be Updated)
 
 
 
