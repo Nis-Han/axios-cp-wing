@@ -14,12 +14,12 @@ Platform for listing and tracking solved CP problems for students and the Compet
 - [ ] Deployment using proper CI/CD  
 
 
-## Databse Schema (To Be Implemented)
+## Databse Schema (`Not fully implemented  as of now`)
 ![DB Schema](./resources/images/DB%20Schema.jpg)
 
 
 
-# API Documentation (To Be Updated)
+# API Documentation (`To Be Updated`)
 
 
 
@@ -46,9 +46,16 @@ Platform for listing and tracking solved CP problems for students and the Compet
 
 
 #### Example
+
 **Request Body**
 ```json
 []
+```
+
+**cURL snippet**
+```bash
+curl  -X GET \
+  'localhost:8080/ping'
 ```
 
 **Response Body**
@@ -58,12 +65,3 @@ Platform for listing and tracking solved CP problems for students and the Compet
 }
 ```
 
-<!-- ### User Creation/Authentication
-> **/user/signup**
-
-> **/userlogin**
-
-
-### User Actions (Authed endpoints)
-
-### Admin User Actions (Authed endpoints) -->
