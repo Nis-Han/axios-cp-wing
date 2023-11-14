@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-var DBInstance *Queries
+var DBInstance Querier
 
 var conn *sql.DB
 

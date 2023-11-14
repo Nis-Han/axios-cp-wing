@@ -10,10 +10,8 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"github.com/nerd500/axios-cp-wing/internal/database"
 	"github.com/nerd500/axios-cp-wing/middleware"
-	"github.com/nerd500/axios-cp-wing/models"
 )
 
 func router() *gin.Engine {
@@ -53,33 +51,9 @@ func router() *gin.Engine {
 func TestMain(m *testing.M) {
 	gin.SetMode(gin.TestMode)
 
-	setupServer()
-	defer database.CloseDataBase()
-
 	exitCode := m.Run()
 
 	os.Exit(exitCode)
-}
-
-func setTestEnv() {
-	err := godotenv.Load("../.env.test")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-}
-
-func initialiseTestDB() {
-	if err := database.InitialiseDatabase(); err != nil {
-		log.Fatal(err)
-	}
-}
-
-func setupServer() {
-
-	setTestEnv()
-
-	initialiseTestDB()
-
 }
 
 func makeRequest(method, url string, body interface{}) *httptest.ResponseRecorder {
@@ -89,18 +63,4 @@ func makeRequest(method, url string, body interface{}) *httptest.ResponseRecorde
 	writer := httptest.NewRecorder()
 	router().ServeHTTP(writer, request)
 	return writer
-}
-
-func GetSampleAuthData() models.AuthData {
-	if len(authDataList) == 0 {
-		TestSignUp(&testing.T{})
-	}
-	return authDataList[0]
-}
-
-func GetSampleLoginCredentials() models.LoginData {
-	if len(loginCredentialsList) == 0 {
-		TestSignUp(&testing.T{})
-	}
-	return loginCredentialsList[0]
 }
