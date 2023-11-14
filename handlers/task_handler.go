@@ -21,11 +21,18 @@ func CreateTask(c *gin.Context) {
 
 	var newTaskData database.CreateTaskParams
 
+	user, err := database.DBInstance.GetUser(c.Request.Context(), taskCreationRequestData.Email)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Couldnt create task"})
+		return
+	}
+
 	newTaskData.ID = uuid.New()
 	newTaskData.CreatedAt = time.Now()
 	newTaskData.LastEditedAt = time.Now()
-	newTaskData.CreatedBy = taskCreationRequestData.Email
-	newTaskData.LastEditedBy = taskCreationRequestData.Email
+	newTaskData.CreatedBy = user.ID
+	newTaskData.LastEditedBy = user.ID
 	newTaskData.Title = taskCreationRequestData.Title
 	newTaskData.Link = taskCreationRequestData.Link
 	newTaskData.Tags = taskCreationRequestData.Tags

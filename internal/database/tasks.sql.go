@@ -40,9 +40,9 @@ INSERT INTO tasks (
 
 type CreateTaskParams struct {
 	ID           uuid.UUID
-	CreatedBy    string
+	CreatedBy    uuid.UUID
 	CreatedAt    time.Time
-	LastEditedBy string
+	LastEditedBy uuid.UUID
 	LastEditedAt time.Time
 	Title        string
 	Link         string

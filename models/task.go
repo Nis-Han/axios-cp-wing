@@ -17,9 +17,9 @@ type TaskCreationRequestData struct {
 
 type Task struct {
 	ID           uuid.UUID `json:"id"`
-	CreatedBy    string    `json:"created_by"`
+	CreatedBy    uuid.UUID `json:"created_by"`
 	CreatedAt    time.Time `json:"created_at"`
-	LastEditedBy string    `json:"last_edited_by"`
+	LastEditedBy uuid.UUID `json:"last_edited_by"`
 	LastEditedAt time.Time `json:"last_edited_at"`
 	Title        string    `json:"title"`
 	Link         string    `json:"link"`
