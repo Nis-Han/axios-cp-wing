@@ -118,17 +118,7 @@ func TestLoginwithInvalidCredentials(t *testing.T) {
 		GetUser(gomock.Any(), gomock.Eq(loginCredentials.Email)).
 		Times(1).
 		DoAndReturn(func(_ any, email string) (database.User, error) {
-			salt := utils.GenerateSalt()
-			return database.User{
-				ID:             uuid.New(),
-				Email:          email,
-				FirstName:      utils.GenerateRandomName(),
-				LastName:       utils.GenerateRandomName(),
-				Salt:           salt,
-				HashedPassword: utils.HashPassword(utils.GenerateRandomPassword(), salt),
-				AuthToken:      utils.GenerateAuthToken(100),
-				IsAdminUser:    false,
-			}, nil
+			return utils.GenerateMockDatabaseUser(), nil
 		})
 
 	database.DBInstance = MockdbInstance

@@ -33,7 +33,7 @@ func SetupRoutes() *gin.Engine {
 	})
 	{
 		adminRoutes.POST("/createTask", CreateTask)
-		adminRoutes.GET("/tasks", CreateTask)
+		adminRoutes.GET("/tasks", GetAllTasks)
 	}
 	return router
 }

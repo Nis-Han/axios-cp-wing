@@ -112,3 +112,43 @@ func TestCreateTaskUnAuthorised(t *testing.T) {
 
 	assert.Equal(t, http.StatusUnauthorized, writer.Code)
 }
+
+func TestGetAllTasksSuccess(t *testing.T) {
+
+	mockUser := utils.GenerateMockDatabaseUser()
+
+	authToken := mockUser.AuthToken
+	headers := map[string]string{"AuthToken": authToken}
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	MockdbInstance := mockdb.NewMockQuerier(ctrl)
+
+	MockdbInstance.EXPECT().
+		GetUserFromAuthToken(gomock.Any(),
+			gomock.Eq(authToken)).
+		Times(1).
+		DoAndReturn(func(_ any, _ any) (database.User, error) {
+			return mockUser, nil
+		})
+
+	MockdbInstance.EXPECT().
+		GetAllTasks(gomock.Any()).
+		Times(1).
+		Return([]database.Task{}, nil)
+
+	database.DBInstance = MockdbInstance
+	writer := makeRequest("GET", "/admin/tasks", struct{}{}, headers)
+
+	var response map[string]string
+	json.Unmarshal(writer.Body.Bytes(), &response)
+
+	error_message, exists := response["error"]
+
+	if exists {
+		log.Print(error_message)
+	}
+
+	assert.Equal(t, http.StatusOK, writer.Code)
+}

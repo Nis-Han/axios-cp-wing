@@ -60,5 +60,5 @@ func GetAllTasks(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, models.DbTaskListToTaskList(tasks))
+	c.JSON(http.StatusOK, models.DbTaskListToTaskList(tasks))
 }

@@ -5,6 +5,8 @@ import (
 	"math/rand"
 
 	"github.com/google/uuid"
+	"github.com/nerd500/axios-cp-wing/constants"
+	"github.com/nerd500/axios-cp-wing/internal/database"
 )
 
 var alphabeticCharset string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -51,4 +53,19 @@ func GenerateRandomLink() string {
 
 func GenerateRandomUUID() uuid.UUID {
 	return uuid.New()
+}
+
+func GenerateMockDatabaseUser() database.User {
+	salt := GenerateSalt()
+	mockUser := database.User{
+		ID:             uuid.New(),
+		Email:          GenerateRandomEmail(),
+		FirstName:      GenerateRandomName(),
+		LastName:       GenerateRandomName(),
+		Salt:           salt,
+		HashedPassword: HashPassword(GenerateRandomPassword(), salt),
+		AuthToken:      GenerateAuthToken(constants.AuthTokenSize),
+		IsAdminUser:    true,
+	}
+	return mockUser
 }
