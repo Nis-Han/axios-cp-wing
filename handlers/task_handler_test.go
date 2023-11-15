@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"testing"
@@ -71,4 +72,43 @@ func TestCreateTaskSuccess(t *testing.T) {
 	}
 
 	assert.Equal(t, http.StatusCreated, writer.Code)
+}
+
+func TestCreateTaskUnAuthorised(t *testing.T) {
+	taskCreationRequestBody := models.TaskCreationRequestData{
+		Email:    utils.GenerateRandomEmail(),
+		Title:    utils.GenerateRandomName(),
+		Link:     utils.GenerateRandomLink(),
+		Platform: utils.GenerateRandomUUID(),
+	}
+
+	authToken := utils.GenerateAuthToken(constants.AuthTokenSize)
+	headers := map[string]string{"AuthToken": authToken}
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	MockdbInstance := mockdb.NewMockQuerier(ctrl)
+
+	MockdbInstance.EXPECT().
+		GetUserFromAuthToken(gomock.Any(),
+			gomock.Eq(authToken)).
+		Times(1).
+		DoAndReturn(func(_ any, _ any) (database.User, error) {
+			return database.User{}, errors.New("Not Found")
+		})
+
+	database.DBInstance = MockdbInstance
+	writer := makeRequest("POST", "/admin/createTask", taskCreationRequestBody, headers)
+
+	var response map[string]string
+	json.Unmarshal(writer.Body.Bytes(), &response)
+
+	error_message, exists := response["error"]
+
+	if exists {
+		log.Print(error_message)
+	}
+
+	assert.Equal(t, http.StatusUnauthorized, writer.Code)
 }

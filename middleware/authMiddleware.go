@@ -13,7 +13,7 @@ func AuthMiddleware(c *gin.Context) {
 	userData, err := database.DBInstance.GetUserFromAuthToken(c.Request.Context(), authData)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid AuthToken"})
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid AuthToken"})
 		c.Abort()
 		return
 	}
