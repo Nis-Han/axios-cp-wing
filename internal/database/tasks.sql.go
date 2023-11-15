@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/lib/pq"
 )
 
 const createTask = `-- name: CreateTask :one
@@ -22,7 +21,6 @@ INSERT INTO tasks (
     last_edited_at,
     title,
     link,
-    tags,
     platform
 
 ) VALUES (
@@ -33,9 +31,8 @@ INSERT INTO tasks (
     $5,
     $6,
     $7,
-    $8,
-    $9
-) RETURNING id, created_by, created_at, last_edited_by, last_edited_at, title, link, tags, platform
+    $8
+) RETURNING id, created_by, created_at, last_edited_by, last_edited_at, title, link, platform
 `
 
 type CreateTaskParams struct {
@@ -46,8 +43,7 @@ type CreateTaskParams struct {
 	LastEditedAt time.Time
 	Title        string
 	Link         string
-	Tags         []string
-	Platform     string
+	Platform     uuid.UUID
 }
 
 func (q *Queries) CreateTask(ctx context.Context, arg CreateTaskParams) (Task, error) {
@@ -59,7 +55,6 @@ func (q *Queries) CreateTask(ctx context.Context, arg CreateTaskParams) (Task, e
 		arg.LastEditedAt,
 		arg.Title,
 		arg.Link,
-		pq.Array(arg.Tags),
 		arg.Platform,
 	)
 	var i Task
@@ -71,7 +66,6 @@ func (q *Queries) CreateTask(ctx context.Context, arg CreateTaskParams) (Task, e
 		&i.LastEditedAt,
 		&i.Title,
 		&i.Link,
-		pq.Array(&i.Tags),
 		&i.Platform,
 	)
 	return i, err

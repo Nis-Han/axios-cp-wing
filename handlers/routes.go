@@ -1,10 +1,9 @@
-package routes
+package handlers
 
 import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nerd500/axios-cp-wing/handlers"
 	"github.com/nerd500/axios-cp-wing/internal/database"
 	"github.com/nerd500/axios-cp-wing/middleware"
 )
@@ -12,11 +11,11 @@ import (
 func SetupRoutes() *gin.Engine {
 	router := gin.Default()
 
-	router.GET("/ping", handlers.Ping)
+	router.GET("/ping", Ping)
 	userRoutes := router.Group("/user")
 	{
-		userRoutes.POST("/login", handlers.Login)
-		userRoutes.POST("/signup", handlers.CreateUser)
+		userRoutes.POST("/login", Login)
+		userRoutes.POST("/signup", CreateUser)
 	}
 	authedRoutes := router.Group("/authed")
 	authedRoutes.Use(middleware.AuthMiddleware)
@@ -27,11 +26,13 @@ func SetupRoutes() *gin.Engine {
 		var user database.User = c.MustGet("userData").(database.User)
 		if !user.IsAdminUser {
 			c.JSON(http.StatusBadRequest, gin.H{"message": "Access Denied"})
+			c.Abort()
+			return
 		}
 		c.Next()
 	})
 	{
-		adminRoutes.POST("/createTask", handlers.CreateTask)
+		adminRoutes.POST("/createTask", CreateTask)
 	}
 	return router
 }

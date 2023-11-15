@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"net/http"
 	"time"
 
@@ -11,20 +12,23 @@ import (
 )
 
 func CreateTask(c *gin.Context) {
-	var taskCreationRequestData models.TaskCreationRequestData
-	err := c.ShouldBindJSON(&taskCreationRequestData)
+
+	decoder := json.NewDecoder(c.Request.Body)
+
+	taskCreationRequestData := models.TaskCreationRequestData{}
+
+	err := decoder.Decode(&taskCreationRequestData)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, "Ill-formatted request body")
 		return
 	}
-
 	var newTaskData database.CreateTaskParams
 
-	user, err := database.DBInstance.GetUser(c.Request.Context(), taskCreationRequestData.Email)
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Couldnt create task"})
+	userData := c.MustGet("userData")
+	user, ok := userData.(database.User)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
 		return
 	}
 
@@ -35,7 +39,6 @@ func CreateTask(c *gin.Context) {
 	newTaskData.LastEditedBy = user.ID
 	newTaskData.Title = taskCreationRequestData.Title
 	newTaskData.Link = taskCreationRequestData.Link
-	newTaskData.Tags = taskCreationRequestData.Tags
 	newTaskData.Platform = taskCreationRequestData.Platform
 
 	dbTask, err := database.DBInstance.CreateTask(c.Request.Context(), newTaskData)

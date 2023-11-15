@@ -8,11 +8,10 @@ import (
 )
 
 type TaskCreationRequestData struct {
-	Email    string   `json:"email" binding:"required"`
-	Title    string   `json:"title"`
-	Link     string   `json:"link"`
-	Tags     []string `json:"tags"`
-	Platform string   `json:"platform"`
+	Email    string    `json:"email" binding:"required"`
+	Title    string    `json:"title"`
+	Link     string    `json:"link"`
+	Platform uuid.UUID `json:"platform"`
 }
 
 type Task struct {
@@ -23,8 +22,7 @@ type Task struct {
 	LastEditedAt time.Time `json:"last_edited_at"`
 	Title        string    `json:"title"`
 	Link         string    `json:"link"`
-	Tags         []string  `json:"tags"`
-	Platform     string    `json:"platform"`
+	Platform     uuid.UUID `json:"platform"`
 }
 
 func DbTaskToTask(dbTask database.Task) Task {
@@ -36,7 +34,6 @@ func DbTaskToTask(dbTask database.Task) Task {
 		LastEditedAt: dbTask.LastEditedAt,
 		Title:        dbTask.Title,
 		Link:         dbTask.Link,
-		Tags:         dbTask.Tags,
 		Platform:     dbTask.Platform,
 	}
 }

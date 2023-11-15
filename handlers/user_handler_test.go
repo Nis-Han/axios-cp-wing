@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
+	"github.com/nerd500/axios-cp-wing/constants"
 	"github.com/nerd500/axios-cp-wing/internal/database"
 	mockdb "github.com/nerd500/axios-cp-wing/internal/database/mock"
 	"github.com/nerd500/axios-cp-wing/models"
@@ -15,9 +16,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
-
-var authDataList []models.AuthData
-var loginCredentialsList []models.LoginData
 
 func TestSignUp(t *testing.T) {
 	newUser := models.User{
@@ -47,7 +45,7 @@ func TestSignUp(t *testing.T) {
 
 	database.DBInstance = MockdbInstance
 
-	writer := makeRequest("POST", "/user/signup", newUser)
+	writer := makeRequest("POST", "/user/signup", newUser, map[string]string{})
 
 	var response map[string]string
 	json.Unmarshal(writer.Body.Bytes(), &response)
@@ -60,15 +58,6 @@ func TestSignUp(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, writer.Code)
 
-	authDataList = append(authDataList, models.AuthData{
-		Email:     response["email"],
-		AuthToken: response["auth"],
-	})
-
-	loginCredentialsList = append(loginCredentialsList, models.LoginData{
-		Email:    newUser.Email,
-		Password: newUser.Password,
-	})
 }
 
 func TestLoginwithValidCredentials(t *testing.T) {
@@ -89,19 +78,19 @@ func TestLoginwithValidCredentials(t *testing.T) {
 			salt := utils.GenerateSalt()
 			return database.User{
 				ID:             uuid.New(),
-				Email:          loginCredentials.Email,
+				Email:          email,
 				FirstName:      utils.GenerateRandomName(),
 				LastName:       utils.GenerateRandomName(),
 				Salt:           salt,
 				HashedPassword: utils.HashPassword(loginCredentials.Password, salt),
-				AuthToken:      utils.GenerateAuthToken(100),
+				AuthToken:      utils.GenerateAuthToken(constants.AuthTokenSize),
 				IsAdminUser:    false,
 			}, nil
 		})
 
 	database.DBInstance = MockdbInstance
 
-	writer := makeRequest("POST", "/user/login", loginCredentials)
+	writer := makeRequest("POST", "/user/login", loginCredentials, map[string]string{})
 
 	var response map[string]string
 	json.Unmarshal(writer.Body.Bytes(), &response)
@@ -132,7 +121,7 @@ func TestLoginwithInvalidCredentials(t *testing.T) {
 			salt := utils.GenerateSalt()
 			return database.User{
 				ID:             uuid.New(),
-				Email:          loginCredentials.Email,
+				Email:          email,
 				FirstName:      utils.GenerateRandomName(),
 				LastName:       utils.GenerateRandomName(),
 				Salt:           salt,
@@ -144,7 +133,7 @@ func TestLoginwithInvalidCredentials(t *testing.T) {
 
 	database.DBInstance = MockdbInstance
 
-	writer := makeRequest("POST", "/user/login", loginCredentials)
+	writer := makeRequest("POST", "/user/login", loginCredentials, map[string]string{})
 
 	var response map[string]string
 	json.Unmarshal(writer.Body.Bytes(), &response)

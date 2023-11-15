@@ -90,19 +90,13 @@ func (q *Queries) GetUser(ctx context.Context, email string) (User, error) {
 	return i, err
 }
 
-const getUserAuthTokenwithEmail = `-- name: GetUserAuthTokenwithEmail :one
+const getUserFromAuthToken = `-- name: GetUserFromAuthToken :one
 SELECT id, email, hashed_password, salt, first_name, last_name, auth_token, is_admin_user FROM users
 WHERE users.auth_token = $1
-AND users.email = $2
 `
 
-type GetUserAuthTokenwithEmailParams struct {
-	AuthToken string
-	Email     string
-}
-
-func (q *Queries) GetUserAuthTokenwithEmail(ctx context.Context, arg GetUserAuthTokenwithEmailParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserAuthTokenwithEmail, arg.AuthToken, arg.Email)
+func (q *Queries) GetUserFromAuthToken(ctx context.Context, authToken string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserFromAuthToken, authToken)
 	var i User
 	err := row.Scan(
 		&i.ID,

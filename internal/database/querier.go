@@ -12,7 +12,7 @@ type Querier interface {
 	CreateTask(ctx context.Context, arg CreateTaskParams) (Task, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	GetUser(ctx context.Context, email string) (User, error)
-	GetUserAuthTokenwithEmail(ctx context.Context, arg GetUserAuthTokenwithEmailParams) (User, error)
+	GetUserFromAuthToken(ctx context.Context, authToken string) (User, error)
 }
 
 var _ Querier = (*Queries)(nil)

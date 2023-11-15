@@ -18,8 +18,7 @@ type Task struct {
 	LastEditedAt time.Time
 	Title        string
 	Link         string
-	Tags         []string
-	Platform     string
+	Platform     uuid.UUID
 }
 
 type User struct {

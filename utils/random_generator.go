@@ -3,6 +3,8 @@ package utils
 import (
 	"fmt"
 	"math/rand"
+
+	"github.com/google/uuid"
 )
 
 var alphabeticCharset string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -39,4 +41,14 @@ func GenerateRandomEmail() string {
 
 func GenerateRandomPassword() string {
 	return fmt.Sprintf(generateRandomAlphanumericString(8+rand.Intn(10)) + "aA1!")
+}
+
+func GenerateRandomLink() string {
+	return fmt.Sprintf(generateRandomAlphanumericString(2+rand.Intn(10)) +
+		"." + generateRandomAlphabeticString(5) +
+		"/" + generateRandomAlphanumericString(5+rand.Intn(50)))
+}
+
+func GenerateRandomUUID() uuid.UUID {
+	return uuid.New()
 }

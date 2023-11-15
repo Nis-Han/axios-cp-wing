@@ -23,7 +23,6 @@ INSERT INTO users (
     $8
 ) RETURNING *;
 
--- name: GetUserAuthTokenwithEmail :one
+-- name: GetUserFromAuthToken :one
 SELECT * FROM users
-WHERE users.auth_token = $1
-AND users.email = $2;
+WHERE users.auth_token = $1;

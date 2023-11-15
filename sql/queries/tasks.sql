@@ -7,7 +7,6 @@ INSERT INTO tasks (
     last_edited_at,
     title,
     link,
-    tags,
     platform
 
 ) VALUES (
@@ -18,6 +17,5 @@ INSERT INTO tasks (
     $5,
     $6,
     $7,
-    $8,
-    $9
+    $8
 ) RETURNING *;

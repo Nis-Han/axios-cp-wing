@@ -6,8 +6,8 @@ import (
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/nerd500/axios-cp-wing/handlers"
 	"github.com/nerd500/axios-cp-wing/internal/database"
-	"github.com/nerd500/axios-cp-wing/routes"
 )
 
 func setEnv() {
@@ -23,7 +23,7 @@ func initialiseDB() {
 }
 
 func startServer() {
-	router := routes.SetupRoutes()
+	router := handlers.SetupRoutes()
 
 	server := &http.Server{
 		Addr:    ":8080",

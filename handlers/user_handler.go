@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/nerd500/axios-cp-wing/constants"
 	"github.com/nerd500/axios-cp-wing/internal/database"
 	"github.com/nerd500/axios-cp-wing/models"
 	"github.com/nerd500/axios-cp-wing/utils"
@@ -59,7 +60,7 @@ func CreateUser(c *gin.Context) {
 	createUserParams.LastName = newUser.LastName
 	createUserParams.Salt = utils.GenerateSalt()
 	createUserParams.HashedPassword = utils.HashPassword(newUser.Password, createUserParams.Salt)
-	createUserParams.AuthToken = utils.GenerateAuthToken(100)
+	createUserParams.AuthToken = utils.GenerateAuthToken(constants.AuthTokenSize)
 	createUserParams.IsAdminUser = false
 
 	_, err := database.DBInstance.GetUser(c.Request.Context(), createUserParams.Email)

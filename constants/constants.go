@@ -1,5 +1,5 @@
 package constants
 
 const (
-	AuthTokenSize = 300
+	AuthTokenSize = 100
 )
