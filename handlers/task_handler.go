@@ -50,3 +50,15 @@ func CreateTask(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, models.DbTaskToTask(dbTask))
 }
+
+func GetAllTasks(c *gin.Context) {
+
+	tasks, err := database.DBInstance.GetAllTasks(c.Request.Context())
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Couldnt get task"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, models.DbTaskListToTaskList(tasks))
+}

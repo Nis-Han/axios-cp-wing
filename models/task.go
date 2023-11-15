@@ -37,3 +37,11 @@ func DbTaskToTask(dbTask database.Task) Task {
 		Platform:     dbTask.Platform,
 	}
 }
+
+func DbTaskListToTaskList(dbTasks []database.Task) []Task {
+	var tasks []Task
+	for _, dbTask := range dbTasks {
+		tasks = append(tasks, DbTaskToTask(dbTask))
+	}
+	return tasks
+}

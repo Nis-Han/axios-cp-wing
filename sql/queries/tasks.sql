@@ -19,3 +19,6 @@ INSERT INTO tasks (
     $7,
     $8
 ) RETURNING *;
+
+-- name: GetAllTasks :many
+SELECT * FROM tasks;

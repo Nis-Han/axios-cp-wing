@@ -11,6 +11,7 @@ import (
 type Querier interface {
 	CreateTask(ctx context.Context, arg CreateTaskParams) (Task, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	GetAllTasks(ctx context.Context) ([]Task, error)
 	GetUser(ctx context.Context, email string) (User, error)
 	GetUserFromAuthToken(ctx context.Context, authToken string) (User, error)
 }

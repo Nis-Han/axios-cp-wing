@@ -3,7 +3,7 @@ Platform for listing and tracking solved CP problems for students and the Compet
 
 ## Features
 - [x] User login/signup with `@iiitl.ac.in` email for tracking personal solved problems.
-- [ ] Listing of Coding Tasks under different lists (Getting Started/Internship Prep/ Pro CP) with problem Tags.
+- [X] Listing of Coding Tasks under different lists (Getting Started/Internship Prep/ Pro CP) with problem Tags.
 - [X] Unit Testing for API handlers using Go-Mock
 - [X] Github Workflow for Testing Compilability and Running Unit Tests on Push
 - [ ] Admin User with permissions to dynamically create/edit problem lists.
