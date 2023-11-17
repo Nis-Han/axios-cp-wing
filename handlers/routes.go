@@ -1,36 +1,39 @@
 package handlers
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
-	"github.com/nerd500/axios-cp-wing/internal/database"
 	"github.com/nerd500/axios-cp-wing/middleware"
 )
 
 func SetupRoutes() *gin.Engine {
 	router := gin.Default()
 
+	// HealthCheck API
 	router.GET("/ping", Ping)
+
+	// Root User API
+	rootUserRoutes := router.Group("/root")
+	rootUserRoutes.Use(middleware.AuthMiddleware)
+	rootUserRoutes.Use(middleware.CheckRootAccess)
+	{
+		rootUserRoutes.GET("/listAdmin", listAdmin)
+	}
+
+	// User Login/SIgnup APIs
 	userRoutes := router.Group("/user")
 	{
 		userRoutes.POST("/login", Login)
 		userRoutes.POST("/signup", CreateUser)
 	}
-	authedRoutes := router.Group("/authed")
+
+	// User level Authed APIs
+	authedRoutes := router.Group("/api")
 	authedRoutes.Use(middleware.AuthMiddleware)
 
+	// Admin Level Authed APIs
 	adminRoutes := router.Group("/admin")
 	adminRoutes.Use(middleware.AuthMiddleware)
-	adminRoutes.Use(func(c *gin.Context) {
-		var user database.User = c.MustGet("userData").(database.User)
-		if !user.IsAdminUser {
-			c.JSON(http.StatusBadRequest, gin.H{"message": "Access Denied"})
-			c.Abort()
-			return
-		}
-		c.Next()
-	})
+	adminRoutes.Use(middleware.CheckAdminAccess)
 	{
 		adminRoutes.POST("/createTask", CreateTask)
 		adminRoutes.GET("/tasks", GetAllTasks)

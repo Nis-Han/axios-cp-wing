@@ -26,3 +26,10 @@ INSERT INTO users (
 -- name: GetUserFromAuthToken :one
 SELECT * FROM users
 WHERE users.auth_token = $1;
+
+-- name: GetAllAdminUsers :many
+SELECT 
+    email, first_name, last_name 
+FROM users
+WHERE
+    is_admin_user = 1;

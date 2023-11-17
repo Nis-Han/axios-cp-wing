@@ -69,6 +69,43 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
+const getAllAdminUsers = `-- name: GetAllAdminUsers :many
+SELECT 
+    email, first_name, last_name 
+FROM users
+WHERE
+    is_admin_user = 1
+`
+
+type GetAllAdminUsersRow struct {
+	Email     string
+	FirstName string
+	LastName  string
+}
+
+func (q *Queries) GetAllAdminUsers(ctx context.Context) ([]GetAllAdminUsersRow, error) {
+	rows, err := q.db.QueryContext(ctx, getAllAdminUsers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetAllAdminUsersRow
+	for rows.Next() {
+		var i GetAllAdminUsersRow
+		if err := rows.Scan(&i.Email, &i.FirstName, &i.LastName); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getUser = `-- name: GetUser :one
 SELECT id, email, hashed_password, salt, first_name, last_name, auth_token, is_admin_user FROM users
 WHERE email = $1
