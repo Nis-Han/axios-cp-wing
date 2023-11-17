@@ -99,6 +99,21 @@ func (mr *MockQuerierMockRecorder) GetAllTasks(arg0 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllTasks", reflect.TypeOf((*MockQuerier)(nil).GetAllTasks), arg0)
 }
 
+// GetAllUsers mocks base method.
+func (m *MockQuerier) GetAllUsers(arg0 context.Context) ([]database.GetAllUsersRow, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAllUsers", arg0)
+	ret0, _ := ret[0].([]database.GetAllUsersRow)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAllUsers indicates an expected call of GetAllUsers.
+func (mr *MockQuerierMockRecorder) GetAllUsers(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllUsers", reflect.TypeOf((*MockQuerier)(nil).GetAllUsers), arg0)
+}
+
 // GetUser mocks base method.
 func (m *MockQuerier) GetUser(arg0 context.Context, arg1 string) (database.User, error) {
 	m.ctrl.T.Helper()

@@ -33,3 +33,8 @@ SELECT
 FROM users
 WHERE
     is_admin_user = 1;
+
+-- name: GetAllUsers :many
+SELECT 
+    email, first_name, last_name 
+FROM users;

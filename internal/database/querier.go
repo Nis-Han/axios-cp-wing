@@ -13,6 +13,7 @@ type Querier interface {
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	GetAllAdminUsers(ctx context.Context) ([]GetAllAdminUsersRow, error)
 	GetAllTasks(ctx context.Context) ([]Task, error)
+	GetAllUsers(ctx context.Context) ([]GetAllUsersRow, error)
 	GetUser(ctx context.Context, email string) (User, error)
 	GetUserFromAuthToken(ctx context.Context, authToken string) (User, error)
 }

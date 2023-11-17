@@ -18,3 +18,14 @@ func listAdmin(c *gin.Context) {
 
 	c.JSON(http.StatusOK, models.DBAdminListtoAdminList(adminList))
 }
+
+func listUser(c *gin.Context) {
+	userList, err := database.DBInstance.GetAllUsers(c.Request.Context())
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error Fetching users from DB"})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.DBUserListtoUserList(userList))
+}

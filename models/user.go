@@ -28,3 +28,41 @@ func DbUserToUser(dbUser database.User) User {
 		AuthToken: dbUser.AuthToken,
 	}
 }
+
+type UserList struct {
+	Email     string `json:"email"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+}
+
+func DBAdminListRowtoAdminListRow(obj database.GetAllAdminUsersRow) UserList {
+	return UserList{
+		Email:     obj.Email,
+		FirstName: obj.FirstName,
+		LastName:  obj.LastName,
+	}
+}
+
+func DBAdminListtoAdminList(list []database.GetAllAdminUsersRow) []UserList {
+	var res []UserList
+	for _, obj := range list {
+		res = append(res, DBAdminListRowtoAdminListRow(obj))
+	}
+	return res
+}
+
+func DBAUserListRowtoUserListRow(obj database.GetAllUsersRow) UserList {
+	return UserList{
+		Email:     obj.Email,
+		FirstName: obj.FirstName,
+		LastName:  obj.LastName,
+	}
+}
+
+func DBUserListtoUserList(list []database.GetAllUsersRow) []UserList {
+	var res []UserList
+	for _, obj := range list {
+		res = append(res, DBAUserListRowtoUserListRow(obj))
+	}
+	return res
+}

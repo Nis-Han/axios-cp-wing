@@ -17,6 +17,7 @@ func SetupRoutes() *gin.Engine {
 	rootUserRoutes.Use(middleware.CheckRootAccess)
 	{
 		rootUserRoutes.GET("/listAdmin", listAdmin)
+		rootUserRoutes.GET("/listUser", listUser)
 	}
 
 	// User Login/SIgnup APIs
