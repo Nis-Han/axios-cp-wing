@@ -8,6 +8,14 @@ import (
 
 var DBInstance Querier
 
+// TODO: Refactor code to have a struct with DBInstance(type Querier) as a field and handler methods to be its own methods
+/*
+type API struct {
+	DB Querier
+	Authenticated bool
+	User database.User (nullable for on-auth APIs)
+}
+*/
 var conn *sql.DB
 
 func InitialiseDatabase() error {

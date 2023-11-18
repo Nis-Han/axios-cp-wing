@@ -1,4 +1,4 @@
--- name: GetUser :one
+-- name: GetUserFromEmail :one
 SELECT * FROM users
 WHERE email = $1;
 
@@ -38,3 +38,9 @@ WHERE
 SELECT 
     email, first_name, last_name 
 FROM users;
+
+-- name: EditAdminAccess :one
+UPDATE users
+SET is_admin_user = $1
+WHERE email = $2
+RETURNING *;

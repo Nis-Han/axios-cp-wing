@@ -6,7 +6,7 @@ Platform for listing and tracking solved CP problems for students and the Compet
 - [X] Listing of Coding Tasks under different lists (Getting Started/Internship Prep/ Pro CP) with problem Tags.
 - [X] Unit Testing for API handlers using Go-Mock
 - [X] Github Workflow for Testing Compilability and Running Unit Tests on Push
-- [ ] Admin User with permissions to dynamically create/edit problem lists.
+- [X] Admin User with permissions to dynamically create/edit problem lists.
 - [ ] Email Verification and Password Reset feature through OTP on Gmail.
 - [ ] Problems sortable with tags.
 - [ ] Logging to keep track of Admin actions. 

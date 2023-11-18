@@ -69,6 +69,21 @@ func (mr *MockQuerierMockRecorder) CreateUser(arg0, arg1 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockQuerier)(nil).CreateUser), arg0, arg1)
 }
 
+// EditAdminAccess mocks base method.
+func (m *MockQuerier) EditAdminAccess(arg0 context.Context, arg1 database.EditAdminAccessParams) (database.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EditAdminAccess", arg0, arg1)
+	ret0, _ := ret[0].(database.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// EditAdminAccess indicates an expected call of EditAdminAccess.
+func (mr *MockQuerierMockRecorder) EditAdminAccess(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EditAdminAccess", reflect.TypeOf((*MockQuerier)(nil).EditAdminAccess), arg0, arg1)
+}
+
 // GetAllAdminUsers mocks base method.
 func (m *MockQuerier) GetAllAdminUsers(arg0 context.Context) ([]database.GetAllAdminUsersRow, error) {
 	m.ctrl.T.Helper()
@@ -114,21 +129,6 @@ func (mr *MockQuerierMockRecorder) GetAllUsers(arg0 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllUsers", reflect.TypeOf((*MockQuerier)(nil).GetAllUsers), arg0)
 }
 
-// GetUser mocks base method.
-func (m *MockQuerier) GetUser(arg0 context.Context, arg1 string) (database.User, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetUser", arg0, arg1)
-	ret0, _ := ret[0].(database.User)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetUser indicates an expected call of GetUser.
-func (mr *MockQuerierMockRecorder) GetUser(arg0, arg1 any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUser", reflect.TypeOf((*MockQuerier)(nil).GetUser), arg0, arg1)
-}
-
 // GetUserFromAuthToken mocks base method.
 func (m *MockQuerier) GetUserFromAuthToken(arg0 context.Context, arg1 string) (database.User, error) {
 	m.ctrl.T.Helper()
@@ -142,4 +142,19 @@ func (m *MockQuerier) GetUserFromAuthToken(arg0 context.Context, arg1 string) (d
 func (mr *MockQuerierMockRecorder) GetUserFromAuthToken(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserFromAuthToken", reflect.TypeOf((*MockQuerier)(nil).GetUserFromAuthToken), arg0, arg1)
+}
+
+// GetUserFromEmail mocks base method.
+func (m *MockQuerier) GetUserFromEmail(arg0 context.Context, arg1 string) (database.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserFromEmail", arg0, arg1)
+	ret0, _ := ret[0].(database.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserFromEmail indicates an expected call of GetUserFromEmail.
+func (mr *MockQuerierMockRecorder) GetUserFromEmail(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserFromEmail", reflect.TypeOf((*MockQuerier)(nil).GetUserFromEmail), arg0, arg1)
 }

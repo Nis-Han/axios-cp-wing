@@ -18,6 +18,7 @@ func SetupRoutes() *gin.Engine {
 	{
 		rootUserRoutes.GET("/listAdmin", listAdmin)
 		rootUserRoutes.GET("/listUser", listUser)
+		rootUserRoutes.PATCH("/updateAdminPermission", editAdminPermissions)
 	}
 
 	// User Login/SIgnup APIs

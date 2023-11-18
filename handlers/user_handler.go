@@ -20,7 +20,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	dbUser, err := database.DBInstance.GetUser(c.Request.Context(), loginData.Email)
+	dbUser, err := database.DBInstance.GetUserFromEmail(c.Request.Context(), loginData.Email)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "User not found"})
@@ -63,7 +63,7 @@ func CreateUser(c *gin.Context) {
 	createUserParams.AuthToken = utils.GenerateAuthToken(constants.AuthTokenSize)
 	createUserParams.IsAdminUser = false
 
-	_, err := database.DBInstance.GetUser(c.Request.Context(), createUserParams.Email)
+	_, err := database.DBInstance.GetUserFromEmail(c.Request.Context(), createUserParams.Email)
 	if err == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "User already exists"})
 		return

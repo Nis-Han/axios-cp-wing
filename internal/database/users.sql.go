@@ -69,6 +69,34 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
+const editAdminAccess = `-- name: EditAdminAccess :one
+UPDATE users
+SET is_admin_user = $1
+WHERE email = $2
+RETURNING id, email, hashed_password, salt, first_name, last_name, auth_token, is_admin_user
+`
+
+type EditAdminAccessParams struct {
+	IsAdminUser bool
+	Email       string
+}
+
+func (q *Queries) EditAdminAccess(ctx context.Context, arg EditAdminAccessParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, editAdminAccess, arg.IsAdminUser, arg.Email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.HashedPassword,
+		&i.Salt,
+		&i.FirstName,
+		&i.LastName,
+		&i.AuthToken,
+		&i.IsAdminUser,
+	)
+	return i, err
+}
+
 const getAllAdminUsers = `-- name: GetAllAdminUsers :many
 SELECT 
     email, first_name, last_name 
@@ -141,13 +169,13 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]GetAllUsersRow, error) {
 	return items, nil
 }
 
-const getUser = `-- name: GetUser :one
+const getUserFromAuthToken = `-- name: GetUserFromAuthToken :one
 SELECT id, email, hashed_password, salt, first_name, last_name, auth_token, is_admin_user FROM users
-WHERE email = $1
+WHERE users.auth_token = $1
 `
 
-func (q *Queries) GetUser(ctx context.Context, email string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUser, email)
+func (q *Queries) GetUserFromAuthToken(ctx context.Context, authToken string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserFromAuthToken, authToken)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -162,13 +190,13 @@ func (q *Queries) GetUser(ctx context.Context, email string) (User, error) {
 	return i, err
 }
 
-const getUserFromAuthToken = `-- name: GetUserFromAuthToken :one
+const getUserFromEmail = `-- name: GetUserFromEmail :one
 SELECT id, email, hashed_password, salt, first_name, last_name, auth_token, is_admin_user FROM users
-WHERE users.auth_token = $1
+WHERE email = $1
 `
 
-func (q *Queries) GetUserFromAuthToken(ctx context.Context, authToken string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserFromAuthToken, authToken)
+func (q *Queries) GetUserFromEmail(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserFromEmail, email)
 	var i User
 	err := row.Scan(
 		&i.ID,

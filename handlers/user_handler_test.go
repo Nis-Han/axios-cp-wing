@@ -31,7 +31,7 @@ func TestSignUp(t *testing.T) {
 	MockdbInstance := mockdb.NewMockQuerier(ctrl)
 
 	MockdbInstance.EXPECT().
-		GetUser(gomock.Any(), gomock.Eq(newUser.Email)).
+		GetUserFromEmail(gomock.Any(), gomock.Eq(newUser.Email)).
 		Times(1).
 		Return(database.User{}, errors.New("User Not Found Error"))
 
@@ -72,7 +72,7 @@ func TestLoginwithValidCredentials(t *testing.T) {
 	MockdbInstance := mockdb.NewMockQuerier(ctrl)
 
 	MockdbInstance.EXPECT().
-		GetUser(gomock.Any(), gomock.Eq(loginCredentials.Email)).
+		GetUserFromEmail(gomock.Any(), gomock.Eq(loginCredentials.Email)).
 		Times(1).
 		DoAndReturn(func(_ any, email string) (database.User, error) {
 			salt := utils.GenerateSalt()
@@ -115,7 +115,7 @@ func TestLoginwithInvalidCredentials(t *testing.T) {
 	MockdbInstance := mockdb.NewMockQuerier(ctrl)
 
 	MockdbInstance.EXPECT().
-		GetUser(gomock.Any(), gomock.Eq(loginCredentials.Email)).
+		GetUserFromEmail(gomock.Any(), gomock.Eq(loginCredentials.Email)).
 		Times(1).
 		DoAndReturn(func(_ any, email string) (database.User, error) {
 			return utils.GenerateMockDatabaseUser(), nil

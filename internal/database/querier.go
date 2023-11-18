@@ -11,11 +11,12 @@ import (
 type Querier interface {
 	CreateTask(ctx context.Context, arg CreateTaskParams) (Task, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	EditAdminAccess(ctx context.Context, arg EditAdminAccessParams) (User, error)
 	GetAllAdminUsers(ctx context.Context) ([]GetAllAdminUsersRow, error)
 	GetAllTasks(ctx context.Context) ([]Task, error)
 	GetAllUsers(ctx context.Context) ([]GetAllUsersRow, error)
-	GetUser(ctx context.Context, email string) (User, error)
 	GetUserFromAuthToken(ctx context.Context, authToken string) (User, error)
+	GetUserFromEmail(ctx context.Context, email string) (User, error)
 }
 
 var _ Querier = (*Queries)(nil)
