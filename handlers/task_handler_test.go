@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/google/uuid"
 	"github.com/nerd500/axios-cp-wing/constants"
 	"github.com/nerd500/axios-cp-wing/internal/database"
 	mockdb "github.com/nerd500/axios-cp-wing/internal/database/mock"
@@ -29,16 +28,13 @@ func TestCreateTaskSuccess(t *testing.T) {
 	headers := map[string]string{"AuthToken": authToken}
 
 	salt := utils.GenerateSalt()
-	mockUser := database.User{
-		ID:             uuid.New(),
-		Email:          taskCreationRequestBody.Email,
-		FirstName:      utils.GenerateRandomName(),
-		LastName:       utils.GenerateRandomName(),
-		Salt:           salt,
-		HashedPassword: utils.HashPassword(utils.GenerateRandomPassword(), salt),
-		AuthToken:      authToken,
-		IsAdminUser:    true,
-	}
+	mockUser := utils.GenerateMockDatabaseUser()
+	mockUser.Salt = salt
+	mockUser.Email = taskCreationRequestBody.Email
+	mockUser.HashedPassword = utils.HashPassword(utils.GenerateRandomPassword(), salt)
+	mockUser.IsAdminUser = true
+	mockUser.AuthToken = authToken
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/google/uuid"
-	"github.com/nerd500/axios-cp-wing/constants"
 	"github.com/nerd500/axios-cp-wing/internal/database"
 	mockdb "github.com/nerd500/axios-cp-wing/internal/database/mock"
 	"github.com/nerd500/axios-cp-wing/models"
@@ -73,17 +71,13 @@ func TestLoginwithValidCredentials(t *testing.T) {
 		GetUserFromEmail(gomock.Any(), gomock.Eq(loginCredentials.Email)).
 		Times(1).
 		DoAndReturn(func(_ any, email string) (database.User, error) {
+			mockUser := utils.GenerateMockDatabaseUser()
 			salt := utils.GenerateSalt()
-			return database.User{
-				ID:             uuid.New(),
-				Email:          email,
-				FirstName:      utils.GenerateRandomName(),
-				LastName:       utils.GenerateRandomName(),
-				Salt:           salt,
-				HashedPassword: utils.HashPassword(loginCredentials.Password, salt),
-				AuthToken:      utils.GenerateAuthToken(constants.AuthTokenSize),
-				IsAdminUser:    false,
-			}, nil
+
+			mockUser.Salt = salt
+			mockUser.Email = email
+			mockUser.HashedPassword = utils.HashPassword(loginCredentials.Password, salt)
+			return mockUser, nil
 		})
 
 	writer := makeRequest("POST", "/user/login", loginCredentials, map[string]string{}, MockdbInstance)
@@ -114,7 +108,9 @@ func TestLoginwithInvalidCredentials(t *testing.T) {
 		GetUserFromEmail(gomock.Any(), gomock.Eq(loginCredentials.Email)).
 		Times(1).
 		DoAndReturn(func(_ any, email string) (database.User, error) {
-			return utils.GenerateMockDatabaseUser(), nil
+			mockUser := utils.GenerateMockDatabaseUser()
+			mockUser.Email = loginCredentials.Email
+			return mockUser, nil
 		})
 
 	writer := makeRequest("POST", "/user/login", loginCredentials, map[string]string{}, MockdbInstance)
