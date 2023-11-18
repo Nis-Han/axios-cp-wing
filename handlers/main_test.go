@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/nerd500/axios-cp-wing/internal/database"
 )
 
 func TestMain(m *testing.M) {
@@ -19,14 +20,15 @@ func TestMain(m *testing.M) {
 	os.Exit(exitCode)
 }
 
-func makeRequest(method, url string, body interface{}, headers map[string]string) *httptest.ResponseRecorder {
+func makeRequest(method, url string, body interface{}, headers map[string]string, db database.Querier) *httptest.ResponseRecorder {
 	requestBody, _ := json.Marshal(body)
 	request, _ := http.NewRequest(method, url, bytes.NewBuffer(requestBody))
 	for key, val := range headers {
 		request.Header.Set(key, val)
 	}
 	writer := httptest.NewRecorder()
-	router := SetupRoutes()
+	apiHandler := Api{DB: db}
+	router := SetupRoutes(&apiHandler)
 	router.ServeHTTP(writer, request)
 	return writer
 }

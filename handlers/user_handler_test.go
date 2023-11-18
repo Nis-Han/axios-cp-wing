@@ -43,9 +43,7 @@ func TestSignUp(t *testing.T) {
 			return mockDBUser, nil
 		})
 
-	database.DBInstance = MockdbInstance
-
-	writer := makeRequest("POST", "/user/signup", newUser, map[string]string{})
+	writer := makeRequest("POST", "/user/signup", newUser, map[string]string{}, MockdbInstance)
 
 	var response map[string]string
 	json.Unmarshal(writer.Body.Bytes(), &response)
@@ -88,9 +86,7 @@ func TestLoginwithValidCredentials(t *testing.T) {
 			}, nil
 		})
 
-	database.DBInstance = MockdbInstance
-
-	writer := makeRequest("POST", "/user/login", loginCredentials, map[string]string{})
+	writer := makeRequest("POST", "/user/login", loginCredentials, map[string]string{}, MockdbInstance)
 
 	var response map[string]string
 	json.Unmarshal(writer.Body.Bytes(), &response)
@@ -121,9 +117,7 @@ func TestLoginwithInvalidCredentials(t *testing.T) {
 			return utils.GenerateMockDatabaseUser(), nil
 		})
 
-	database.DBInstance = MockdbInstance
-
-	writer := makeRequest("POST", "/user/login", loginCredentials, map[string]string{})
+	writer := makeRequest("POST", "/user/login", loginCredentials, map[string]string{}, MockdbInstance)
 
 	var response map[string]string
 	json.Unmarshal(writer.Body.Bytes(), &response)

@@ -6,19 +6,9 @@ import (
 	"os"
 )
 
-var DBInstance Querier
-
-// TODO: Refactor code to have a struct with DBInstance(type Querier) as a field and handler methods to be its own methods
-/*
-type API struct {
-	DB Querier
-	Authenticated bool
-	User database.User (nullable for on-auth APIs)
-}
-*/
 var conn *sql.DB
 
-func InitialiseDatabase() error {
+func InitialiseDatabase() (Querier, error) {
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbUser := os.Getenv("DB_USER")
@@ -30,18 +20,18 @@ func InitialiseDatabase() error {
 	conn, err := sql.Open("postgres", dbConnectionString)
 
 	if err != nil {
-		return fmt.Errorf("error connecting to the database: %v", err)
+		return nil, fmt.Errorf("error connecting to the database: %v", err)
 	}
 
 	if err = conn.Ping(); err != nil {
-		return fmt.Errorf("failed to ping the database: %v", err)
+		return nil, fmt.Errorf("failed to ping the database: %v", err)
 	}
 
 	fmt.Printf("connected to database \n")
 
-	DBInstance = New(conn)
+	DBInstance := New(conn)
 
-	return nil
+	return DBInstance, nil
 }
 
 func CloseDataBase() {

@@ -16,14 +16,16 @@ func setEnv() {
 	}
 }
 
-func initialiseDB() {
-	if err := database.InitialiseDatabase(); err != nil {
+func initialiseDB() database.Querier {
+	db, err := database.InitialiseDatabase()
+	if err != nil {
 		log.Fatal(err)
 	}
+	return db
 }
 
-func startServer() {
-	router := handlers.SetupRoutes()
+func startServer(apiHandler *handlers.Api) {
+	router := handlers.SetupRoutes(apiHandler)
 
 	server := &http.Server{
 		Addr:    ":8080",
@@ -40,9 +42,10 @@ func main() {
 
 	setEnv()
 
-	initialiseDB()
+	apiHandler := handlers.Api{}
+	apiHandler.DB = initialiseDB()
 	defer database.CloseDataBase()
 
-	startServer()
+	startServer(&apiHandler)
 
 }

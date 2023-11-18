@@ -11,7 +11,7 @@ import (
 	"github.com/nerd500/axios-cp-wing/models"
 )
 
-func CreateTask(c *gin.Context) {
+func (api *Api) CreateTask(c *gin.Context) {
 
 	decoder := json.NewDecoder(c.Request.Body)
 
@@ -41,7 +41,7 @@ func CreateTask(c *gin.Context) {
 	newTaskData.Link = taskCreationRequestData.Link
 	newTaskData.Platform = taskCreationRequestData.Platform
 
-	dbTask, err := database.DBInstance.CreateTask(c.Request.Context(), newTaskData)
+	dbTask, err := api.DB.CreateTask(c.Request.Context(), newTaskData)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Couldnt create task"})
@@ -51,9 +51,9 @@ func CreateTask(c *gin.Context) {
 	c.JSON(http.StatusCreated, models.DbTaskToTask(dbTask))
 }
 
-func GetAllTasks(c *gin.Context) {
+func (api *Api) GetAllTasks(c *gin.Context) {
 
-	tasks, err := database.DBInstance.GetAllTasks(c.Request.Context())
+	tasks, err := api.DB.GetAllTasks(c.Request.Context())
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Couldnt get task"})

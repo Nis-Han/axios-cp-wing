@@ -11,7 +11,7 @@ import (
 	"github.com/nerd500/axios-cp-wing/utils"
 )
 
-func Login(c *gin.Context) {
+func (api *Api) Login(c *gin.Context) {
 	var loginData models.LoginData
 	err := c.ShouldBindJSON(&loginData)
 
@@ -20,7 +20,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	dbUser, err := database.DBInstance.GetUserFromEmail(c.Request.Context(), loginData.Email)
+	dbUser, err := api.DB.GetUserFromEmail(c.Request.Context(), loginData.Email)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "User not found"})
@@ -36,7 +36,7 @@ func Login(c *gin.Context) {
 
 }
 
-func CreateUser(c *gin.Context) {
+func (api *Api) CreateUser(c *gin.Context) {
 	var newUser models.User
 	var createUserParams database.CreateUserParams
 
@@ -63,14 +63,14 @@ func CreateUser(c *gin.Context) {
 	createUserParams.AuthToken = utils.GenerateAuthToken(constants.AuthTokenSize)
 	createUserParams.IsAdminUser = false
 
-	_, err := database.DBInstance.GetUserFromEmail(c.Request.Context(), createUserParams.Email)
+	_, err := api.DB.GetUserFromEmail(c.Request.Context(), createUserParams.Email)
 	if err == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "User already exists"})
 		return
 	}
 
 	var dbUser database.User
-	dbUser, err = database.DBInstance.CreateUser(c.Request.Context(), createUserParams)
+	dbUser, err = api.DB.CreateUser(c.Request.Context(), createUserParams)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Couldnt create user", "err": err.Error()})

@@ -7,10 +7,14 @@ import (
 	"github.com/nerd500/axios-cp-wing/internal/database"
 )
 
-func AuthMiddleware(c *gin.Context) {
+type MW struct {
+	DB database.Querier
+}
+
+func (mw *MW) AuthMiddleware(c *gin.Context) {
 	authData := c.Request.Header.Get("AuthToken")
 
-	userData, err := database.DBInstance.GetUserFromAuthToken(c.Request.Context(), authData)
+	userData, err := mw.DB.GetUserFromAuthToken(c.Request.Context(), authData)
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid AuthToken"})

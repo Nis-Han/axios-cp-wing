@@ -6,12 +6,11 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nerd500/axios-cp-wing/internal/database"
 	"github.com/nerd500/axios-cp-wing/models"
 )
 
-func listAdmin(c *gin.Context) {
-	adminList, err := database.DBInstance.GetAllAdminUsers(c.Request.Context())
+func (api *Api) listAdmin(c *gin.Context) {
+	adminList, err := api.DB.GetAllAdminUsers(c.Request.Context())
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error Fetching admin users from DB"})
@@ -21,8 +20,8 @@ func listAdmin(c *gin.Context) {
 	c.JSON(http.StatusOK, models.DBAdminListtoAdminList(adminList))
 }
 
-func listUser(c *gin.Context) {
-	userList, err := database.DBInstance.GetAllUsers(c.Request.Context())
+func (api *Api) listUser(c *gin.Context) {
+	userList, err := api.DB.GetAllUsers(c.Request.Context())
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error Fetching users from DB"})
@@ -32,7 +31,7 @@ func listUser(c *gin.Context) {
 	c.JSON(http.StatusOK, models.DBUserListtoUserList(userList))
 }
 
-func editAdminPermissions(c *gin.Context) {
+func (api *Api) editAdminPermissions(c *gin.Context) {
 	params := models.EditAdminAccessParams{}
 
 	if err := c.ShouldBindJSON(&params); err != nil {
@@ -41,14 +40,14 @@ func editAdminPermissions(c *gin.Context) {
 		return
 	}
 
-	_, err := database.DBInstance.GetUserFromEmail(c.Request.Context(), params.Email)
+	_, err := api.DB.GetUserFromEmail(c.Request.Context(), params.Email)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("User with Email" + params.Email + "not found!" + err.Error())})
 		c.Abort()
 		return
 	}
 
-	user, err := database.DBInstance.EditAdminAccess(c.Request.Context(), models.EditAdminAccessParamsToDBModel(params))
+	user, err := api.DB.EditAdminAccess(c.Request.Context(), models.EditAdminAccessParamsToDBModel(params))
 
 	if user.Email != params.Email || user.IsAdminUser != params.IsAdminUser {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Something Unexpected happened.\n DB Error:" + err.Error())})

@@ -2,43 +2,49 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/nerd500/axios-cp-wing/internal/database"
 	"github.com/nerd500/axios-cp-wing/middleware"
 )
 
-func SetupRoutes() *gin.Engine {
+type Api struct {
+	DB database.Querier
+}
+
+func SetupRoutes(api *Api) *gin.Engine {
 	router := gin.Default()
+	mw := middleware.MW{DB: api.DB}
 
 	// HealthCheck API
-	router.GET("/ping", Ping)
+	router.GET("/ping", api.Ping)
 
 	// Root User API
 	rootUserRoutes := router.Group("/root")
-	rootUserRoutes.Use(middleware.AuthMiddleware)
-	rootUserRoutes.Use(middleware.CheckRootAccess)
+	rootUserRoutes.Use(mw.AuthMiddleware)
+	rootUserRoutes.Use(mw.CheckRootAccess)
 	{
-		rootUserRoutes.GET("/listAdmin", listAdmin)
-		rootUserRoutes.GET("/listUser", listUser)
-		rootUserRoutes.PATCH("/updateAdminPermission", editAdminPermissions)
+		rootUserRoutes.GET("/listAdmin", api.listAdmin)
+		rootUserRoutes.GET("/listUser", api.listUser)
+		rootUserRoutes.PATCH("/updateAdminPermission", api.editAdminPermissions)
 	}
 
 	// User Login/SIgnup APIs
 	userRoutes := router.Group("/user")
 	{
-		userRoutes.POST("/login", Login)
-		userRoutes.POST("/signup", CreateUser)
+		userRoutes.POST("/login", api.Login)
+		userRoutes.POST("/signup", api.CreateUser)
 	}
 
 	// User level Authed APIs
 	authedRoutes := router.Group("/api")
-	authedRoutes.Use(middleware.AuthMiddleware)
+	authedRoutes.Use(mw.AuthMiddleware)
 
 	// Admin Level Authed APIs
 	adminRoutes := router.Group("/admin")
-	adminRoutes.Use(middleware.AuthMiddleware)
-	adminRoutes.Use(middleware.CheckAdminAccess)
+	adminRoutes.Use(mw.AuthMiddleware)
+	adminRoutes.Use(mw.CheckAdminAccess)
 	{
-		adminRoutes.POST("/createTask", CreateTask)
-		adminRoutes.GET("/tasks", GetAllTasks)
+		adminRoutes.POST("/createTask", api.CreateTask)
+		adminRoutes.GET("/tasks", api.GetAllTasks)
 	}
 	return router
 }

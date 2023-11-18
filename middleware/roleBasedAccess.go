@@ -8,7 +8,7 @@ import (
 	"github.com/nerd500/axios-cp-wing/internal/database"
 )
 
-func CheckAdminAccess(c *gin.Context) {
+func (mw *MW) CheckAdminAccess(c *gin.Context) {
 	var user database.User = c.MustGet("userData").(database.User)
 	if !user.IsAdminUser {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Access Denied, Admin Access Required!"})
@@ -18,7 +18,7 @@ func CheckAdminAccess(c *gin.Context) {
 	c.Next()
 }
 
-func CheckRootAccess(c *gin.Context) {
+func (mw *MW) CheckRootAccess(c *gin.Context) {
 	var user database.User = c.MustGet("userData").(database.User)
 	if user.Email != os.Getenv("ROOT_USER_EMAIL") {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Access Denied, Root Access Required!"})

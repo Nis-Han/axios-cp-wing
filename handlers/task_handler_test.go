@@ -59,8 +59,7 @@ func TestCreateTaskSuccess(t *testing.T) {
 			return database.Task(createTaskParams), nil
 		})
 
-	database.DBInstance = MockdbInstance
-	writer := makeRequest("POST", "/admin/createTask", taskCreationRequestBody, headers)
+	writer := makeRequest("POST", "/admin/createTask", taskCreationRequestBody, headers, MockdbInstance)
 
 	var response map[string]string
 	json.Unmarshal(writer.Body.Bytes(), &response)
@@ -98,8 +97,7 @@ func TestCreateTaskUnAuthorised(t *testing.T) {
 			return database.User{}, errors.New("Not Found")
 		})
 
-	database.DBInstance = MockdbInstance
-	writer := makeRequest("POST", "/admin/createTask", taskCreationRequestBody, headers)
+	writer := makeRequest("POST", "/admin/createTask", taskCreationRequestBody, headers, MockdbInstance)
 
 	var response map[string]string
 	json.Unmarshal(writer.Body.Bytes(), &response)
@@ -138,8 +136,7 @@ func TestGetAllTasksSuccess(t *testing.T) {
 		Times(1).
 		Return([]database.Task{}, nil)
 
-	database.DBInstance = MockdbInstance
-	writer := makeRequest("GET", "/admin/tasks", struct{}{}, headers)
+	writer := makeRequest("GET", "/admin/tasks", struct{}{}, headers, MockdbInstance)
 
 	var response map[string]string
 	json.Unmarshal(writer.Body.Bytes(), &response)
