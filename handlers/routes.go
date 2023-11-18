@@ -23,7 +23,6 @@ func SetupRoutes(api *Api) *gin.Engine {
 	rootUserRoutes.Use(mw.CheckRootAccess)
 	{
 		rootUserRoutes.GET("/listAdmin", api.listAdmin)
-		rootUserRoutes.GET("/listUser", api.listUser)
 		rootUserRoutes.PATCH("/updateAdminPermission", api.editAdminPermissions)
 	}
 
@@ -43,6 +42,7 @@ func SetupRoutes(api *Api) *gin.Engine {
 	adminRoutes.Use(mw.AuthMiddleware)
 	adminRoutes.Use(mw.CheckAdminAccess)
 	{
+		adminRoutes.GET("/listUser", api.listUser)
 		adminRoutes.POST("/createTask", api.CreateTask)
 		adminRoutes.GET("/tasks", api.GetAllTasks)
 	}

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"os"
 	"testing"
 
 	"github.com/nerd500/axios-cp-wing/internal/database"
@@ -119,6 +120,76 @@ func TestLoginwithInvalidCredentials(t *testing.T) {
 	json.Unmarshal(writer.Body.Bytes(), &response)
 
 	error_message, exists := response["error"]
+	if exists {
+		log.Print(error_message)
+	}
+
+	assert.Equal(t, http.StatusUnauthorized, writer.Code)
+}
+
+func TestListUserSuccess(t *testing.T) {
+
+	mockUser := utils.GenerateMockDatabaseUser()
+	mockUser.IsAdminUser = true
+	mockUser.Email = os.Getenv("ROOT_USER_EMAIL")
+	authToken := mockUser.AuthToken
+	headers := map[string]string{"AuthToken": authToken}
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	MockdbInstance := mockdb.NewMockQuerier(ctrl)
+
+	MockdbInstance.EXPECT().
+		GetUserFromAuthToken(gomock.Any(),
+			gomock.Eq(authToken)).
+		Times(1).
+		Return(mockUser, nil)
+
+	MockdbInstance.EXPECT().
+		GetAllUsers(gomock.Any()).
+		Times(1).
+		Return([]database.GetAllUsersRow{}, nil)
+
+	writer := makeRequest("GET", "/root/listUser", struct{}{}, headers, MockdbInstance)
+
+	var response map[string]string
+	json.Unmarshal(writer.Body.Bytes(), &response)
+
+	error_message, exists := response["error"]
+
+	if exists {
+		log.Print(error_message)
+	}
+
+	assert.Equal(t, http.StatusOK, writer.Code)
+}
+
+func TestListUserUnauthorised(t *testing.T) {
+
+	mockUser := utils.GenerateMockDatabaseUser()
+	mockUser.IsAdminUser = true
+	authToken := mockUser.AuthToken
+	headers := map[string]string{"AuthToken": authToken}
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	MockdbInstance := mockdb.NewMockQuerier(ctrl)
+
+	MockdbInstance.EXPECT().
+		GetUserFromAuthToken(gomock.Any(),
+			gomock.Eq(authToken)).
+		Times(1).
+		Return(mockUser, nil)
+
+	writer := makeRequest("GET", "/root/listUser", struct{}{}, headers, MockdbInstance)
+
+	var response map[string]string
+	json.Unmarshal(writer.Body.Bytes(), &response)
+
+	error_message, exists := response["error"]
+
 	if exists {
 		log.Print(error_message)
 	}

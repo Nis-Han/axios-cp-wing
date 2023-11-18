@@ -79,3 +79,14 @@ func (api *Api) CreateUser(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, models.DbUserToUser(dbUser))
 }
+
+func (api *Api) listUser(c *gin.Context) {
+	userList, err := api.DB.GetAllUsers(c.Request.Context())
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error Fetching users from DB"})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.DBUserListtoUserList(userList))
+}
