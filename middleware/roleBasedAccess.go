@@ -10,7 +10,7 @@ import (
 
 func (mw *MW) CheckAdminAccess(c *gin.Context) {
 	var user database.User = c.MustGet("userData").(database.User)
-	if !user.IsAdminUser {
+	if !user.IsAdminUser && user.Email != os.Getenv("ROOT_USER_EMAIL") {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Access Denied, Admin Access Required!"})
 		c.Abort()
 		return
