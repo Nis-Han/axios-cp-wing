@@ -114,7 +114,7 @@ func TestCreateTaskUnAuthorised(t *testing.T) {
 func TestGetAllTasksSuccess(t *testing.T) {
 
 	mockUser := utils.GenerateMockDatabaseUser()
-
+	mockUser.IsAdminUser = true
 	authToken := mockUser.AuthToken
 	headers := map[string]string{"AuthToken": authToken}
 
