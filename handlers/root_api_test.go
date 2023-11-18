@@ -51,3 +51,35 @@ func TestListAdminSuccess(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, writer.Code)
 }
+
+func TestListAdminUnauthorised(t *testing.T) {
+
+	mockUser := utils.GenerateMockDatabaseUser()
+	mockUser.IsAdminUser = true
+	authToken := mockUser.AuthToken
+	headers := map[string]string{"AuthToken": authToken}
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	MockdbInstance := mockdb.NewMockQuerier(ctrl)
+
+	MockdbInstance.EXPECT().
+		GetUserFromAuthToken(gomock.Any(),
+			gomock.Eq(authToken)).
+		Times(1).
+		Return(mockUser, nil)
+
+	writer := makeRequest("GET", "/root/listAdmin", struct{}{}, headers, MockdbInstance)
+
+	var response map[string]string
+	json.Unmarshal(writer.Body.Bytes(), &response)
+
+	error_message, exists := response["error"]
+
+	if exists {
+		log.Print(error_message)
+	}
+
+	assert.Equal(t, http.StatusUnauthorized, writer.Code)
+}

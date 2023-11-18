@@ -11,7 +11,7 @@ import (
 func (mw *MW) CheckAdminAccess(c *gin.Context) {
 	var user database.User = c.MustGet("userData").(database.User)
 	if !user.IsAdminUser {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Access Denied, Admin Access Required!"})
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Access Denied, Admin Access Required!"})
 		c.Abort()
 		return
 	}
@@ -21,7 +21,7 @@ func (mw *MW) CheckAdminAccess(c *gin.Context) {
 func (mw *MW) CheckRootAccess(c *gin.Context) {
 	var user database.User = c.MustGet("userData").(database.User)
 	if user.Email != os.Getenv("ROOT_USER_EMAIL") {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Access Denied, Root Access Required!"})
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Access Denied, Root Access Required!"})
 		c.Abort()
 		return
 	}
