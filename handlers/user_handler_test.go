@@ -5,7 +5,6 @@ import (
 	"errors"
 	"log"
 	"net/http"
-	"os"
 	"testing"
 
 	"github.com/nerd500/axios-cp-wing/internal/database"
@@ -131,7 +130,6 @@ func TestListUserSuccess(t *testing.T) {
 
 	mockUser := utils.GenerateMockDatabaseUser()
 	mockUser.IsAdminUser = true
-	mockUser.Email = os.Getenv("ROOT_USER_EMAIL")
 	authToken := mockUser.AuthToken
 	headers := map[string]string{"AuthToken": authToken}
 
@@ -151,7 +149,7 @@ func TestListUserSuccess(t *testing.T) {
 		Times(1).
 		Return([]database.GetAllUsersRow{}, nil)
 
-	writer := makeRequest("GET", "/root/listUser", struct{}{}, headers, MockdbInstance)
+	writer := makeRequest("GET", "/admin/listUser", struct{}{}, headers, MockdbInstance)
 
 	var response map[string]string
 	json.Unmarshal(writer.Body.Bytes(), &response)
@@ -168,7 +166,6 @@ func TestListUserSuccess(t *testing.T) {
 func TestListUserUnauthorised(t *testing.T) {
 
 	mockUser := utils.GenerateMockDatabaseUser()
-	mockUser.IsAdminUser = true
 	authToken := mockUser.AuthToken
 	headers := map[string]string{"AuthToken": authToken}
 
@@ -183,7 +180,7 @@ func TestListUserUnauthorised(t *testing.T) {
 		Times(1).
 		Return(mockUser, nil)
 
-	writer := makeRequest("GET", "/root/listUser", struct{}{}, headers, MockdbInstance)
+	writer := makeRequest("GET", "/admin/listUser", struct{}{}, headers, MockdbInstance)
 
 	var response map[string]string
 	json.Unmarshal(writer.Body.Bytes(), &response)

@@ -9,6 +9,7 @@ import (
 
 	"github.com/nerd500/axios-cp-wing/internal/database"
 	mockdb "github.com/nerd500/axios-cp-wing/internal/database/mock"
+	"github.com/nerd500/axios-cp-wing/models"
 	"github.com/nerd500/axios-cp-wing/utils"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
@@ -82,4 +83,67 @@ func TestListAdminUnauthorised(t *testing.T) {
 	}
 
 	assert.Equal(t, http.StatusUnauthorized, writer.Code)
+}
+
+func TestEditAdminPermissionsSuccess(t *testing.T) {
+	mockUser := utils.GenerateMockDatabaseUser()
+	mockUser.IsAdminUser = true
+	mockUser.Email = os.Getenv("ROOT_USER_EMAIL")
+	authToken := mockUser.AuthToken
+	headers := map[string]string{"AuthToken": authToken}
+
+	params := models.EditAdminAccessParams{}
+	params.Email = utils.GenerateRandomEmail()
+	params.IsAdminUser = true
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	MockdbInstance := mockdb.NewMockQuerier(ctrl)
+
+	MockdbInstance.EXPECT().
+		GetUserFromAuthToken(gomock.Any(),
+			gomock.Eq(authToken)).
+		Times(2).
+		Return(mockUser, nil)
+
+	MockdbInstance.EXPECT().
+		GetUserFromEmail(gomock.Any(), params.Email).
+		Times(2).
+		Return(utils.GenerateMockDatabaseUser(), nil)
+
+	MockdbInstance.EXPECT().
+		EditAdminAccess(gomock.Any(), gomock.Any()).
+		Times(2).
+		DoAndReturn(func(_ any, _ any) (database.User, error) {
+			mockReturnUser := utils.GenerateMockDatabaseUser()
+			mockReturnUser.IsAdminUser = params.IsAdminUser
+			mockReturnUser.Email = params.Email
+			return mockReturnUser, nil
+		})
+	writer := makeRequest("PATCH", "/root/updateAdminPermission", params, headers, MockdbInstance)
+
+	var response map[string]string
+	json.Unmarshal(writer.Body.Bytes(), &response)
+
+	error_message, exists := response["error"]
+
+	if exists {
+		log.Print(error_message)
+	}
+	assert.Equal(t, http.StatusOK, writer.Code)
+
+	params.IsAdminUser = false
+
+	writer = makeRequest("PATCH", "/root/updateAdminPermission", params, headers, MockdbInstance)
+
+	json.Unmarshal(writer.Body.Bytes(), &response)
+
+	error_message, exists = response["error"]
+
+	if exists {
+		log.Print(error_message)
+	}
+	assert.Equal(t, http.StatusOK, writer.Code)
+
 }
