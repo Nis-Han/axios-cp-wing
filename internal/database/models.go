@@ -5,6 +5,7 @@
 package database
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -30,4 +31,13 @@ type User struct {
 	LastName       string
 	AuthToken      string
 	IsAdminUser    bool
+	VerifiedUser   bool
+}
+
+type UserVerification struct {
+	ID              uuid.UUID
+	UserID          uuid.UUID
+	CreatedAt       time.Time
+	ValidTill       time.Time
+	VerificationKey sql.NullString
 }

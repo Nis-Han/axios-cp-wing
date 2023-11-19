@@ -20,7 +20,8 @@ INSERT INTO users (
     first_name,
     last_name,
     auth_token,
-    is_admin_user
+    is_admin_user,
+    verified_user
 ) VALUES (
     $1,
     $2,
@@ -29,8 +30,9 @@ INSERT INTO users (
     $5,
     $6,
     $7,
-    $8
-) RETURNING id, email, hashed_password, salt, first_name, last_name, auth_token, is_admin_user
+    $8,
+    $9
+) RETURNING id, email, hashed_password, salt, first_name, last_name, auth_token, is_admin_user, verified_user
 `
 
 type CreateUserParams struct {
@@ -42,6 +44,7 @@ type CreateUserParams struct {
 	LastName       string
 	AuthToken      string
 	IsAdminUser    bool
+	VerifiedUser   bool
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -54,6 +57,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.LastName,
 		arg.AuthToken,
 		arg.IsAdminUser,
+		arg.VerifiedUser,
 	)
 	var i User
 	err := row.Scan(
@@ -65,6 +69,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.LastName,
 		&i.AuthToken,
 		&i.IsAdminUser,
+		&i.VerifiedUser,
 	)
 	return i, err
 }
@@ -73,7 +78,7 @@ const editAdminAccess = `-- name: EditAdminAccess :one
 UPDATE users
 SET is_admin_user = $1
 WHERE email = $2
-RETURNING id, email, hashed_password, salt, first_name, last_name, auth_token, is_admin_user
+RETURNING id, email, hashed_password, salt, first_name, last_name, auth_token, is_admin_user, verified_user
 `
 
 type EditAdminAccessParams struct {
@@ -93,6 +98,7 @@ func (q *Queries) EditAdminAccess(ctx context.Context, arg EditAdminAccessParams
 		&i.LastName,
 		&i.AuthToken,
 		&i.IsAdminUser,
+		&i.VerifiedUser,
 	)
 	return i, err
 }
@@ -170,7 +176,7 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]GetAllUsersRow, error) {
 }
 
 const getUserFromAuthToken = `-- name: GetUserFromAuthToken :one
-SELECT id, email, hashed_password, salt, first_name, last_name, auth_token, is_admin_user FROM users
+SELECT id, email, hashed_password, salt, first_name, last_name, auth_token, is_admin_user, verified_user FROM users
 WHERE users.auth_token = $1
 `
 
@@ -186,12 +192,13 @@ func (q *Queries) GetUserFromAuthToken(ctx context.Context, authToken string) (U
 		&i.LastName,
 		&i.AuthToken,
 		&i.IsAdminUser,
+		&i.VerifiedUser,
 	)
 	return i, err
 }
 
 const getUserFromEmail = `-- name: GetUserFromEmail :one
-SELECT id, email, hashed_password, salt, first_name, last_name, auth_token, is_admin_user FROM users
+SELECT id, email, hashed_password, salt, first_name, last_name, auth_token, is_admin_user, verified_user FROM users
 WHERE email = $1
 `
 
@@ -207,6 +214,7 @@ func (q *Queries) GetUserFromEmail(ctx context.Context, email string) (User, err
 		&i.LastName,
 		&i.AuthToken,
 		&i.IsAdminUser,
+		&i.VerifiedUser,
 	)
 	return i, err
 }

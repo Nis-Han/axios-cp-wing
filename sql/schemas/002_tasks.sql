@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS tasks (
     last_edited_at timestamp NOT NULL,
     title text NOT NULL UNIQUE,
     link text NOT NULL,
-    platform UUID NOT NULL
+    platform UUID NOT NULL,
+    PRIMARY KEY(id)
 );
 
 ALTER TABLE "tasks" ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");

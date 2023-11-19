@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     last_name varchar(100) NOT NULL,
     auth_token varchar(256) NOT NULL UNIQUE,
     is_admin_user boolean NOT NULL,
+    verified_user bool NOT NULL,
     PRIMARY KEY(id)
 );
 

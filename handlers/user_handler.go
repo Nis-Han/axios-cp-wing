@@ -62,6 +62,7 @@ func (api *Api) CreateUser(c *gin.Context) {
 	createUserParams.HashedPassword = utils.HashPassword(newUser.Password, createUserParams.Salt)
 	createUserParams.AuthToken = utils.GenerateAuthToken(constants.AuthTokenSize)
 	createUserParams.IsAdminUser = false
+	createUserParams.VerifiedUser = false
 
 	_, err := api.DB.GetUserFromEmail(c.Request.Context(), createUserParams.Email)
 	if err == nil {

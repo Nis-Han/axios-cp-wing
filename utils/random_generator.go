@@ -66,6 +66,7 @@ func GenerateMockDatabaseUser() database.User {
 		HashedPassword: HashPassword(GenerateRandomPassword(), salt),
 		AuthToken:      GenerateAuthToken(constants.AuthTokenSize),
 		IsAdminUser:    false,
+		VerifiedUser:   true,
 	}
 	return mockUser
 }

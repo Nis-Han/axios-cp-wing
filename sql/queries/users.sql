@@ -11,7 +11,8 @@ INSERT INTO users (
     first_name,
     last_name,
     auth_token,
-    is_admin_user
+    is_admin_user,
+    verified_user
 ) VALUES (
     $1,
     $2,
@@ -20,7 +21,8 @@ INSERT INTO users (
     $5,
     $6,
     $7,
-    $8
+    $8,
+    $9
 ) RETURNING *;
 
 -- name: GetUserFromAuthToken :one

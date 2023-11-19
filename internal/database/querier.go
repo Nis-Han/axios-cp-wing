@@ -6,11 +6,14 @@ package database
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 type Querier interface {
 	CreateTask(ctx context.Context, arg CreateTaskParams) (Task, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	CreateUserVerification(ctx context.Context, userID uuid.UUID) (UserVerification, error)
 	EditAdminAccess(ctx context.Context, arg EditAdminAccessParams) (User, error)
 	GetAllAdminUsers(ctx context.Context) ([]GetAllAdminUsersRow, error)
 	GetAllTasks(ctx context.Context) ([]Task, error)

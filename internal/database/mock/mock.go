@@ -12,6 +12,7 @@ import (
 	context "context"
 	reflect "reflect"
 
+	uuid "github.com/google/uuid"
 	database "github.com/nerd500/axios-cp-wing/internal/database"
 	gomock "go.uber.org/mock/gomock"
 )
@@ -67,6 +68,21 @@ func (m *MockQuerier) CreateUser(arg0 context.Context, arg1 database.CreateUserP
 func (mr *MockQuerierMockRecorder) CreateUser(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockQuerier)(nil).CreateUser), arg0, arg1)
+}
+
+// CreateUserVerification mocks base method.
+func (m *MockQuerier) CreateUserVerification(arg0 context.Context, arg1 uuid.UUID) (database.UserVerification, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateUserVerification", arg0, arg1)
+	ret0, _ := ret[0].(database.UserVerification)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateUserVerification indicates an expected call of CreateUserVerification.
+func (mr *MockQuerierMockRecorder) CreateUserVerification(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUserVerification", reflect.TypeOf((*MockQuerier)(nil).CreateUserVerification), arg0, arg1)
 }
 
 // EditAdminAccess mocks base method.
