@@ -108,7 +108,7 @@ SELECT
     email, first_name, last_name 
 FROM users
 WHERE
-    is_admin_user = 1
+    is_admin_user = TRUE
 `
 
 type GetAllAdminUsersRow struct {
@@ -221,7 +221,7 @@ func (q *Queries) GetUserFromEmail(ctx context.Context, email string) (User, err
 
 const setUserVerificationTrue = `-- name: SetUserVerificationTrue :one
 UPDATE users
-SET verified_use = TRUE
+SET verified_user = TRUE
 WHERE id = $1
 RETURNING id, email, hashed_password, salt, first_name, last_name, auth_token, is_admin_user, verified_user
 `

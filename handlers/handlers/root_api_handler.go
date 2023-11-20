@@ -13,7 +13,7 @@ func (api *Api) listAdmin(c *gin.Context) {
 	adminList, err := api.DB.GetAllAdminUsers(c.Request.Context())
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error Fetching admin users from DB"})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error Fetching admin users from DB", "error": err.Error()})
 		c.Abort()
 		return
 	}
@@ -45,5 +45,5 @@ func (api *Api) editAdminPermissions(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, fmt.Sprintf("{is_admin_user:"+strconv.FormatBool(user.IsAdminUser)+"}"))
+	c.JSON(http.StatusOK, fmt.Sprintf("is_admin_user: "+strconv.FormatBool(user.IsAdminUser)))
 }

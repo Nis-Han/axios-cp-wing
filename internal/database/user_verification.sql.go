@@ -24,11 +24,11 @@ INSERT INTO user_verification (
     valid_till,
     verification_key
 ) VALUES (
-    uuid_generate_v4(),
+    gen_random_uuid (),
     $1,
     current_timestamp,
     current_timestamp + interval '1 day',
-    encode(gen_random_bytes(32), 'hex')
+    LEFT(MD5(random()::text), 32)
 ) RETURNING id, user_id, created_at, valid_till, verification_key
 `
 

@@ -17,7 +17,7 @@ func (api *Api) generateAndSendOTPViaEmail(c *gin.Context) {
 	verificationData, err := api.DB.CreateUserVerification(c.Request.Context(), user.ID)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Database Error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Database Error", "error": err.Error()})
 		c.Abort()
 		return
 	}
@@ -25,11 +25,11 @@ func (api *Api) generateAndSendOTPViaEmail(c *gin.Context) {
 	err = api.EmailClient.SendEmail(user.Email, constants.OTPVerificationUsingMail(user.FirstName, verificationData.VerificationKey))
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Email Client Error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Email Client Error", "err": err.Error()})
 		c.Abort()
 		return
 	}
-	c.JSON(http.StatusCreated, "")
+	c.JSON(http.StatusCreated, "Verification key generated")
 
 }
 
@@ -47,6 +47,12 @@ func (api *Api) verifyUserFromOTP(c *gin.Context) {
 
 	var user database.User = c.MustGet("userData").(database.User)
 
+	if user.VerifiedUser {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "User Already Verified"})
+		c.Abort()
+		return
+	}
+
 	verificationData, err := api.DB.GetUserVerificationEntryFromUserID(c.Request.Context(), user.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Database Error"})
@@ -61,7 +67,12 @@ func (api *Api) verifyUserFromOTP(c *gin.Context) {
 	}
 
 	if verificationData.VerificationKey == verificationParams.VerificationKey {
-		user, _ = api.DB.SetUserVerificationTrue(c.Request.Context(), verificationData.UserID)
+		user, err = api.DB.SetUserVerificationTrue(c.Request.Context(), verificationData.UserID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			c.Abort()
+			return
+		}
 	} else {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Wrong Verification Key"})
 		c.Abort()
