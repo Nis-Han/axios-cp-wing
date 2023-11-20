@@ -10,6 +10,21 @@ import (
 	"github.com/google/uuid"
 )
 
+type Dtag struct {
+	ID        uuid.UUID
+	CreatedBy uuid.UUID
+	CreatedAt time.Time
+	Title     string
+}
+
+type Platform struct {
+	ID           uuid.UUID
+	CreatedBy    uuid.UUID
+	CreatedAt    time.Time
+	Title        string
+	PaltformLink string
+}
+
 type Task struct {
 	ID           uuid.UUID
 	CreatedBy    uuid.UUID
