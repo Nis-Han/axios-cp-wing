@@ -26,13 +26,7 @@ func (api *Api) CreateTask(c *gin.Context) {
 	}
 	var newTaskData database.CreateTaskParams
 
-	userData := c.MustGet("userData")
-	user, ok := userData.(database.User)
-	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
-		c.Abort()
-		return
-	}
+	var user database.User = c.MustGet("userData").(database.User)
 
 	newTaskData.ID = uuid.New()
 	newTaskData.CreatedAt = time.Now()

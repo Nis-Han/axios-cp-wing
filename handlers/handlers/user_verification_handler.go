@@ -12,13 +12,7 @@ import (
 )
 
 func (api *Api) generateAndSendOTPViaEmail(c *gin.Context) {
-	userData := c.MustGet("userData")
-	user, ok := userData.(database.User)
-	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
-		c.Abort()
-		return
-	}
+	var user database.User = c.MustGet("userData").(database.User)
 
 	verificationData, err := api.DB.CreateUserVerification(c.Request.Context(), user.ID)
 
@@ -51,13 +45,7 @@ func (api *Api) verifyUserFromOTP(c *gin.Context) {
 		return
 	}
 
-	userData := c.MustGet("userData")
-	user, ok := userData.(database.User)
-	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
-		c.Abort()
-		return
-	}
+	var user database.User = c.MustGet("userData").(database.User)
 
 	verificationData, err := api.DB.GetUserVerificationEntryFromUserID(c.Request.Context(), user.ID)
 	if err != nil {
