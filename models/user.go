@@ -6,12 +6,13 @@ import (
 )
 
 type User struct {
-	ID        uuid.UUID `json:"id"`
-	Email     string    `json:"email" binding:"required"`
-	FirstName string    `json:"first_name" binding:"required"`
-	LastName  string    `json:"last_name" binding:"required"`
-	AuthToken string    `json:"auth"`
-	Password  string    `json:"password"`
+	ID           uuid.UUID `json:"id"`
+	Email        string    `json:"email" binding:"required"`
+	FirstName    string    `json:"first_name" binding:"required"`
+	LastName     string    `json:"last_name" binding:"required"`
+	AuthToken    string    `json:"auth"`
+	Password     string    `json:"password"`
+	VerifiedUser bool      `json:"verified_user"`
 }
 
 type LoginData struct {
@@ -21,11 +22,12 @@ type LoginData struct {
 
 func DbUserToUser(dbUser database.User) User {
 	return User{
-		ID:        dbUser.ID,
-		Email:     dbUser.Email,
-		FirstName: dbUser.FirstName,
-		LastName:  dbUser.LastName,
-		AuthToken: dbUser.AuthToken,
+		ID:           dbUser.ID,
+		Email:        dbUser.Email,
+		FirstName:    dbUser.FirstName,
+		LastName:     dbUser.LastName,
+		AuthToken:    dbUser.AuthToken,
+		VerifiedUser: dbUser.VerifiedUser,
 	}
 }
 

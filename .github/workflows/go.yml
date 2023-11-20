@@ -25,4 +25,4 @@ jobs:
       run: go build -v ./...
 
     - name: TestHandlers
-      run: go test -v ./handlers
+      run: make test

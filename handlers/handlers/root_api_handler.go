@@ -14,6 +14,7 @@ func (api *Api) listAdmin(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error Fetching admin users from DB"})
+		c.Abort()
 		return
 	}
 

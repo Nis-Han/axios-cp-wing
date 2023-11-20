@@ -5,7 +5,6 @@
 package database
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -39,5 +38,5 @@ type UserVerification struct {
 	UserID          uuid.UUID
 	CreatedAt       time.Time
 	ValidTill       time.Time
-	VerificationKey sql.NullString
+	VerificationKey string
 }

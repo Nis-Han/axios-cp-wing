@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS user_verification (
     user_id uuid NOT NULL,
     created_at timestamp NOT NULL,
     valid_till timestamp NOT NULL,
-    verification_key varchar(32),
+    verification_key varchar(32) NOT NULL,
     PRIMARY KEY(id)
 );
 

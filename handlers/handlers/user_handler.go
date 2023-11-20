@@ -17,6 +17,7 @@ func (api *Api) Login(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, "Ill-formatted request body")
+		c.Abort()
 		return
 	}
 
@@ -24,11 +25,13 @@ func (api *Api) Login(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "User not found"})
+		c.Abort()
 		return
 	}
 
 	if !utils.CheckPassword(dbUser, loginData.Password) {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Authentication failed: Wrong Password"})
+		c.Abort()
 		return
 	}
 
@@ -42,16 +45,19 @@ func (api *Api) CreateUser(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&newUser); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.Abort()
 		return
 	}
 
 	if err := utils.IsValidEmail(newUser.Email); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.Abort()
 		return
 	}
 
 	if err := utils.IsValidPassword(newUser.Password); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.Abort()
 		return
 	}
 	createUserParams.ID = uuid.New()
@@ -67,6 +73,7 @@ func (api *Api) CreateUser(c *gin.Context) {
 	_, err := api.DB.GetUserFromEmail(c.Request.Context(), createUserParams.Email)
 	if err == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "User already exists"})
+		c.Abort()
 		return
 	}
 
@@ -75,6 +82,7 @@ func (api *Api) CreateUser(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Couldnt create user", "err": err.Error()})
+		c.Abort()
 		return
 	}
 
@@ -86,6 +94,7 @@ func (api *Api) listUser(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error Fetching users from DB"})
+		c.Abort()
 		return
 	}
 

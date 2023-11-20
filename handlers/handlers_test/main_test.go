@@ -1,4 +1,4 @@
-package handlers
+package handlers_test
 
 import (
 	"bytes"
@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/nerd500/axios-cp-wing/handlers/handlers"
 	"github.com/nerd500/axios-cp-wing/internal/database"
 )
 
@@ -27,8 +28,8 @@ func makeRequest(method, url string, body interface{}, headers map[string]string
 		request.Header.Set(key, val)
 	}
 	writer := httptest.NewRecorder()
-	apiHandler := Api{DB: db}
-	router := SetupRoutes(&apiHandler)
+	apiHandler := handlers.Api{DB: db}
+	router := handlers.SetupRoutes(&apiHandler)
 	router.ServeHTTP(writer, request)
 	return writer
 }

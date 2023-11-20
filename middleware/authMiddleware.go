@@ -11,7 +11,29 @@ type MW struct {
 	DB database.Querier
 }
 
-func (mw *MW) AuthMiddleware(c *gin.Context) {
+func (mw *MW) AuthMiddlewareForVerifiedEmail(c *gin.Context) {
+	authData := c.Request.Header.Get("AuthToken")
+
+	userData, err := mw.DB.GetUserFromAuthToken(c.Request.Context(), authData)
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid AuthToken"})
+		c.Abort()
+		return
+	}
+
+	if !userData.VerifiedUser {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Email Verification Pending"})
+		c.Abort()
+		return
+	}
+
+	c.Set("userData", userData)
+
+	c.Next()
+}
+
+func (mw *MW) AuthMiddlewareForUnverifiedEmail(c *gin.Context) {
 	authData := c.Request.Header.Get("AuthToken")
 
 	userData, err := mw.DB.GetUserFromAuthToken(c.Request.Context(), authData)

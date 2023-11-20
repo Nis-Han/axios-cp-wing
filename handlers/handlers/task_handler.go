@@ -21,6 +21,7 @@ func (api *Api) CreateTask(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, "Ill-formatted request body")
+		c.Abort()
 		return
 	}
 	var newTaskData database.CreateTaskParams
@@ -29,6 +30,7 @@ func (api *Api) CreateTask(c *gin.Context) {
 	user, ok := userData.(database.User)
 	if !ok {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+		c.Abort()
 		return
 	}
 
@@ -45,6 +47,7 @@ func (api *Api) CreateTask(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Couldnt create task"})
+		c.Abort()
 		return
 	}
 
@@ -57,6 +60,7 @@ func (api *Api) GetAllTasks(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Couldnt get task"})
+		c.Abort()
 		return
 	}
 

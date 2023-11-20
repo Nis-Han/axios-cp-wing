@@ -3,10 +3,12 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
-	"github.com/nerd500/axios-cp-wing/handlers"
+	"github.com/nerd500/axios-cp-wing/client/email_client"
+	"github.com/nerd500/axios-cp-wing/handlers/handlers"
 	"github.com/nerd500/axios-cp-wing/internal/database"
 )
 
@@ -46,6 +48,10 @@ func main() {
 	apiHandler.DB = initialiseDB()
 	defer database.CloseDataBase()
 
+	apiHandler.EmailClient = &email_client.EmailClientImpl{
+		AppEmail: os.Getenv("APP_EMAIL"),
+		Password: os.Getenv("APP_EMAIL_PASSWORD"),
+	}
 	startServer(&apiHandler)
 
 }
