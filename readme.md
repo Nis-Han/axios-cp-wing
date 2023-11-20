@@ -7,8 +7,8 @@ Platform for listing and tracking solved CP problems for students and the Compet
 - [X] Unit Testing for API handlers using Go-Mock
 - [X] Github Workflow for Testing Compilability and Running Unit Tests on Push
 - [X] Admin User with permissions to dynamically create/edit problem lists.
-- [ ] Email Verification and Password Reset feature through OTP on Gmail.
-- [ ] Problems sortable with tags.
+- [X] Email Verification feature through OTP on Gmail. (TODO: Password reset feature)
+- [ ] Problems filters based on different tags.
 - [ ] Logging to keep track of Admin actions. 
 
 - [ ] Deployment using proper CI/CD  

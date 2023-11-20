@@ -17,3 +17,7 @@ INSERT INTO user_verification (
     current_timestamp + interval '1 day',
     encode(gen_random_bytes(32), 'hex')
 ) RETURNING *;
+
+-- name: GetUserVerificationEntryFromUserID :one
+SELECT * FROM user_verification
+WHERE user_id = $1;

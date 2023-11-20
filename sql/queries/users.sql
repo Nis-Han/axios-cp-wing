@@ -46,3 +46,9 @@ UPDATE users
 SET is_admin_user = $1
 WHERE email = $2
 RETURNING *;
+
+-- name: SetUserVerificationTrue :one
+UPDATE users
+SET verified_use = TRUE
+WHERE id = $1
+RETURNING *;

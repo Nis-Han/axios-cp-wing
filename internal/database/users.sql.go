@@ -218,3 +218,27 @@ func (q *Queries) GetUserFromEmail(ctx context.Context, email string) (User, err
 	)
 	return i, err
 }
+
+const setUserVerificationTrue = `-- name: SetUserVerificationTrue :one
+UPDATE users
+SET verified_use = TRUE
+WHERE id = $1
+RETURNING id, email, hashed_password, salt, first_name, last_name, auth_token, is_admin_user, verified_user
+`
+
+func (q *Queries) SetUserVerificationTrue(ctx context.Context, id uuid.UUID) (User, error) {
+	row := q.db.QueryRowContext(ctx, setUserVerificationTrue, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.HashedPassword,
+		&i.Salt,
+		&i.FirstName,
+		&i.LastName,
+		&i.AuthToken,
+		&i.IsAdminUser,
+		&i.VerifiedUser,
+	)
+	return i, err
+}

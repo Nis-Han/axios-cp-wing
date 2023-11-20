@@ -39,7 +39,8 @@ func SetupRoutes(api *Api) *gin.Engine {
 	otpRoutes := router.Group("/verify")
 	otpRoutes.Use(mw.AuthMiddlewareForUnverifiedEmail)
 	{
-		otpRoutes.POST("createOTP", api.generateAndSendOTPViaEmail)
+		otpRoutes.POST("/createOTP", api.generateAndSendOTPViaEmail)
+		otpRoutes.POST("/verifyOTP", api.verifyUserFromOTP)
 	}
 
 	// User level Authed APIs

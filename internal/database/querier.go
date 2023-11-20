@@ -20,6 +20,8 @@ type Querier interface {
 	GetAllUsers(ctx context.Context) ([]GetAllUsersRow, error)
 	GetUserFromAuthToken(ctx context.Context, authToken string) (User, error)
 	GetUserFromEmail(ctx context.Context, email string) (User, error)
+	GetUserVerificationEntryFromUserID(ctx context.Context, userID uuid.UUID) (UserVerification, error)
+	SetUserVerificationTrue(ctx context.Context, id uuid.UUID) (User, error)
 }
 
 var _ Querier = (*Queries)(nil)

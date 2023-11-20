@@ -23,7 +23,7 @@ func (mw *MW) AuthMiddlewareForVerifiedEmail(c *gin.Context) {
 	}
 
 	if !userData.VerifiedUser {
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "Email Verification Pending"})
+		c.JSON(http.StatusLocked, gin.H{"message": "User Need to verify their Emaail before accessing this endpoint"})
 		c.Abort()
 		return
 	}

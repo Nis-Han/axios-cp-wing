@@ -44,3 +44,21 @@ func (q *Queries) CreateUserVerification(ctx context.Context, userID uuid.UUID) 
 	)
 	return i, err
 }
+
+const getUserVerificationEntryFromUserID = `-- name: GetUserVerificationEntryFromUserID :one
+SELECT id, user_id, created_at, valid_till, verification_key FROM user_verification
+WHERE user_id = $1
+`
+
+func (q *Queries) GetUserVerificationEntryFromUserID(ctx context.Context, userID uuid.UUID) (UserVerification, error) {
+	row := q.db.QueryRowContext(ctx, getUserVerificationEntryFromUserID, userID)
+	var i UserVerification
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CreatedAt,
+		&i.ValidTill,
+		&i.VerificationKey,
+	)
+	return i, err
+}

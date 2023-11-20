@@ -174,3 +174,33 @@ func (mr *MockQuerierMockRecorder) GetUserFromEmail(arg0, arg1 any) *gomock.Call
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserFromEmail", reflect.TypeOf((*MockQuerier)(nil).GetUserFromEmail), arg0, arg1)
 }
+
+// GetUserVerificationEntryFromUserID mocks base method.
+func (m *MockQuerier) GetUserVerificationEntryFromUserID(arg0 context.Context, arg1 uuid.UUID) (database.UserVerification, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserVerificationEntryFromUserID", arg0, arg1)
+	ret0, _ := ret[0].(database.UserVerification)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserVerificationEntryFromUserID indicates an expected call of GetUserVerificationEntryFromUserID.
+func (mr *MockQuerierMockRecorder) GetUserVerificationEntryFromUserID(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserVerificationEntryFromUserID", reflect.TypeOf((*MockQuerier)(nil).GetUserVerificationEntryFromUserID), arg0, arg1)
+}
+
+// SetUserVerificationTrue mocks base method.
+func (m *MockQuerier) SetUserVerificationTrue(arg0 context.Context, arg1 uuid.UUID) (database.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetUserVerificationTrue", arg0, arg1)
+	ret0, _ := ret[0].(database.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SetUserVerificationTrue indicates an expected call of SetUserVerificationTrue.
+func (mr *MockQuerierMockRecorder) SetUserVerificationTrue(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetUserVerificationTrue", reflect.TypeOf((*MockQuerier)(nil).SetUserVerificationTrue), arg0, arg1)
+}
