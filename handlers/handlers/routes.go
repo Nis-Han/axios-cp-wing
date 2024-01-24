@@ -5,6 +5,10 @@ import (
 	"github.com/nerd500/axios-cp-wing/client/email_client"
 	"github.com/nerd500/axios-cp-wing/internal/database"
 	"github.com/nerd500/axios-cp-wing/middleware"
+
+	docs "github.com/nerd500/axios-cp-wing/docs"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Api struct {
@@ -18,6 +22,10 @@ func SetupRoutes(api *Api) *gin.Engine {
 
 	// HealthCheck API
 	router.GET("/ping", api.Ping)
+
+	// add swagger
+	docs.SwaggerInfo.BasePath = "/"
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Root User API
 	rootUserRoutes := router.Group("/root")

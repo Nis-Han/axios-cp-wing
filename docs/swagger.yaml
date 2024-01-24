@@ -1,0 +1,28 @@
+basePath: /api
+host: localhost:5000
+info:
+  contact: {}
+  description: This is the documentation for Axios CP Wing API
+  title: Axios CP Wing API Documentation
+  version: "1"
+paths:
+  /ping:
+    get:
+      description: Ping
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Pong
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Ping
+      tags:
+      - HealthCheck
+schemes:
+- https
+swagger: "2.0"

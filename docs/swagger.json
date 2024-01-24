@@ -1,0 +1,42 @@
+{
+    "schemes": [
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "This is the documentation for Axios CP Wing API",
+        "title": "Axios CP Wing API Documentation",
+        "contact": {},
+        "version": "1"
+    },
+    "host": "localhost:5000",
+    "basePath": "/api",
+    "paths": {
+        "/ping": {
+            "get": {
+                "description": "Ping",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "HealthCheck"
+                ],
+                "summary": "Ping",
+                "responses": {
+                    "200": {
+                        "description": "Pong",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

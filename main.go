@@ -40,6 +40,11 @@ func startServer(apiHandler *handlers.Api) {
 	}
 }
 
+// @title Axios CP Wing API Documentation
+// @description This is the documentation for Axios CP Wing API
+// @version 1
+// @schemes http
+// @schemes https
 func main() {
 
 	setEnv()
